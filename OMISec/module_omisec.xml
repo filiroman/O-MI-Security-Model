@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="module_omisec" default="compile.module.omisec">
+  <dirname property="module.omisec.basedir" file="${ant.file.module_omisec}"/>
+  
+  <property name="module.jdk.home.omisec" value="${project.jdk.home}"/>
+  <property name="module.jdk.bin.omisec" value="${project.jdk.bin}"/>
+  <property name="module.jdk.classpath.omisec" value="${project.jdk.classpath}"/>
+  
+  <property name="compiler.args.omisec" value="-encoding UTF-8 -source 1.7 ${compiler.args}"/>
+  
+  <property name="omisec.output.dir" value="${module.omisec.basedir}/out/production/OMISec"/>
+  <property name="omisec.testoutput.dir" value="${module.omisec.basedir}/out/test/OMISec"/>
+  
+  <path id="omisec.module.bootclasspath">
+    <!-- Paths to be included in compilation bootclasspath -->
+  </path>
+  
+  <path id="omisec.module.production.classpath">
+    <path refid="${module.jdk.classpath.omisec}"/>
+  </path>
+  
+  <path id="omisec.runtime.production.module.classpath">
+    <pathelement location="${omisec.output.dir}"/>
+  </path>
+  
+  <path id="omisec.module.classpath">
+    <path refid="${module.jdk.classpath.omisec}"/>
+    <pathelement location="${omisec.output.dir}"/>
+  </path>
+  
+  <path id="omisec.runtime.module.classpath">
+    <pathelement location="${omisec.testoutput.dir}"/>
+    <pathelement location="${omisec.output.dir}"/>
+  </path>
+  
+  
+  <patternset id="excluded.from.module.omisec">
+    <patternset refid="ignored.files"/>
+  </patternset>
+  
+  <patternset id="excluded.from.compilation.omisec">
+    <patternset refid="excluded.from.module.omisec"/>
+  </patternset>
+  
+  <path id="omisec.module.sourcepath">
+    <dirset dir="${module.omisec.basedir}">
+      <include name="src"/>
+    </dirset>
+  </path>
+  
+  
+  <target name="compile.module.omisec" depends="compile.module.omisec.production,compile.module.omisec.tests" description="Compile module OMISec"/>
+  
+  <target name="compile.module.omisec.production" depends="register.custom.compilers" description="Compile module OMISec; production classes">
+    <mkdir dir="${omisec.output.dir}"/>
+    <javac2 destdir="${omisec.output.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true" executable="${module.jdk.bin.omisec}/javac">
+      <compilerarg line="${compiler.args.omisec}"/>
+      <bootclasspath refid="omisec.module.bootclasspath"/>
+      <classpath refid="omisec.module.production.classpath"/>
+      <src refid="omisec.module.sourcepath"/>
+      <patternset refid="excluded.from.compilation.omisec"/>
+    </javac2>
+    
+    <copy todir="${omisec.output.dir}">
+      <fileset dir="${module.omisec.basedir}/src">
+        <patternset refid="compiler.resources"/>
+        <type type="file"/>
+      </fileset>
+    </copy>
+  </target>
+  
+  <target name="compile.module.omisec.tests" depends="register.custom.compilers,compile.module.omisec.production" description="compile module OMISec; test classes" unless="skip.tests"/>
+  
+  <target name="clean.module.omisec" description="cleanup module">
+    <delete dir="${omisec.output.dir}"/>
+    <delete dir="${omisec.testoutput.dir}"/>
+  </target>
+</project>
