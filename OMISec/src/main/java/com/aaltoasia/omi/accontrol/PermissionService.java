@@ -112,6 +112,7 @@ public class PermissionService extends HttpServlet {
             } else {
                 logger.info("Valid session is found!");
                 String userEmail = (String)httpSession.getAttribute("userID");
+
                 //logger.info("UserCredential: "+userEmail);
                 boolean isWrite = request.getParameter("write").equalsIgnoreCase("true");
 
@@ -159,6 +160,15 @@ public class PermissionService extends HttpServlet {
             } else {
                 logger.info("Valid session is found!");
                 String userEmail = (String)httpSession.getAttribute("userID");
+
+                if (AuthService.getInstance().isAdministrator(userEmail))
+                {
+                    logger.info("Administrator mode ON");
+                    response.getWriter().write("true");
+                    return;
+                }
+
+                logger.info("Administrator mode OFF");
 
                 ArrayList<String> paths = DBHelper.getInstance().getRulesByUser(userEmail);
                 String res = wrapJson(paths, "paths");
