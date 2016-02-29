@@ -53,6 +53,8 @@
             if (hasRead)
               return;
 
+            $("#nodetree").jstree('deselect_node', parent);
+
             if (hasWrite)
               newText = parent.text.replace('[RW]', '[R]');
             else
@@ -60,6 +62,7 @@
 
             newText = newText.replace('[D]','');
             $("#nodetree").jstree('rename_node', parent,  newText);
+            $("#nodetree").jstree('select_node', parent);
           },
         },
         set_write: {
@@ -76,6 +79,8 @@
             if (hasWrite)
               return;
 
+            $("#nodetree").jstree('deselect_node', parent);
+
             if (hasRead)
               newText = parent.text.replace('[R]', '[RW]');
             else
@@ -83,6 +88,7 @@
 
             newText = newText.replace('[D]','');
             $("#nodetree").jstree('rename_node', parent,  newText);
+            $("#nodetree").jstree('select_node', parent);
           }
         },
         del_rule: {
@@ -101,6 +107,8 @@
             if (hasDelete)
               return;
 
+            $("#nodetree").jstree('deselect_node', parent);
+
             if (hasRead)
               newText = parent.text.replace('[R]','');
             else if (hasWrite)
@@ -108,6 +116,7 @@
 
             newText += "[D]";
             $("#nodetree").jstree('rename_node', parent,  newText);
+            $("#nodetree").jstree('select_node', parent);
           }
         },
       };
