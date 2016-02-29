@@ -43,14 +43,16 @@ public class AuthService {
 
     private void writePermissionToDB(String objName, String xPath, int groupID, boolean objectRule)
     {
-        boolean writable = objName.indexOf("[W]") > -1;
+        boolean writable = objName.indexOf("[RW]") > -1;
         boolean readable = objName.indexOf("[R]") > -1;
+        boolean to_delete = objName.indexOf("[D]") > -1;
         //objName = objName.replace("[W]","").replace("[R]","");
         if (writable)
             DBHelper.getInstance().updateOrCreateRule(xPath, groupID, true, objectRule);
-        else if (readable) {
+        else if (readable)
             DBHelper.getInstance().updateOrCreateRule(xPath, groupID, false, objectRule);
-        }
+        else if (to_delete)
+            DBHelper.getInstance().deleteRule(xPath, groupID);
     }
 
     private void writeObjectPermission(OMIObject obj, int groupID)

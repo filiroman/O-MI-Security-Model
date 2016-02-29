@@ -404,6 +404,7 @@
         success: function(response) {
           console.log("User Permissions sent! Response:"+response);
 
+          // Tree collapses completely because of that, needs to be fixed
           $("#nodetree").jstree('close_all');
           tree.deselect_all();
 

@@ -279,11 +279,11 @@ public class PermissionService extends HttpServlet {
 
     public void writeObjectXPath(OMIObject obj, String currentPath) {
 
-        String newPath = currentPath + "/" + obj.getId().replace("[W]","").replace("[R]","");;
+        String newPath = currentPath + "/" + obj.getId().replace("[RW]","").replace("[R]","").replace("[D]","");
         obj.xPath = newPath;
 
         for (OMIInfoItem infoItem:obj.getInfoItems()) {
-            infoItem.xPath = newPath + "/" + infoItem.getName().replace("[W]","").replace("[R]","");;
+            infoItem.xPath = newPath + "/" + infoItem.getName().replace("[RW]","").replace("[R]","").replace("[D]","");
         }
 
         for (OMIObject nextObject:obj.getSubObjects()) {

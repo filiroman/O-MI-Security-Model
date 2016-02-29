@@ -492,7 +492,7 @@ public class DBHelper {
             stmt.executeUpdate();
             stmt.close();
 
-            logger.info("Record for HID:"+HID+" successfully created.");
+            logger.info("Record for HID:"+HID+" successfully deleted.");
             return true;
 
         } catch (SQLException ex)
