@@ -36,72 +36,77 @@
       });
     };
     openOdfContextmenu = function(target) {
-      var createNode;
-      createNode = function(particle, odfName, treeTypeName, defaultId) {
-        return {
-          label: "Add " + particle + " " + odfName,
-          icon: my.icon[treeTypeName],
-          _disabled: my.odfTree.settings.types[target.type].valid_children.indexOf(treeTypeName) === -1,
-          action: function(data) {
-            var idName, name, path, tree;
-            tree = WebOmi.consts.odfTree;
-            parent = tree.get_node(data.reference);
-            name = defaultId != null ? window.prompt("Enter a name for the new " + odfName + ":", defaultId) : odfName;
-            idName = idesc(name);
-            path = parent.id + "/" + idName;
-            if ($(jqesc(path)).length > 0) {
-              tree.select_node(path);
-            } else {
-              return my.addOdfTreeNode(parent, path, name, treeTypeName);
-            }
-          }
-        };
-      };
+
       return {
-        helptxt: {
-          label: "For write request:",
-          icon: "glyphicon glyphicon-pencil",
-          action: function() {
-            return my.ui.request.set("write", false);
-          },
-          separator_after: true
-        },
-        add_info: $.extend(createNode("an", "InfoItem", "infoitem", "MyInfoItem"), {
-          action: function(data) {
-            var tree;
-            tree = WebOmi.consts.odfTree;
-            parent = tree.get_node(data.reference);
-            $('#infoItemParent').val(parent.id);
-            return WebOmi.consts.infoItemDialog.modal("show");
-          }
-        }),
-        add_obj: createNode("an", "Object", "object", "MyObject"),
-        add_metadata: createNode("a", "MetaData", "metadata", null),
 
         set_read: {
           label: "Set read",
-          icon: "glyphicon glyphicon-pencil",
+          icon: "glyphicon glyphicon-book",
           action: function(data) {
             tree = WebOmi.consts.odfTree;
             parent = tree.get_node(data.reference);
-            // console.log(JSON.stringify(parent));
-            var newText = (parent.text.indexOf("[R]") > -1) ? parent.text.replace('[R]', '') : parent.text+"[R]";
-            $("#nodetree").jstree('rename_node', parent,  newText);
-            //parent.data = "[R]";
-            //console.log(JSON.stringify(parent));
 
+            var hasRead = (parent.text.indexOf("[R]") > -1);
+            var hasWrite = (parent.text.indexOf("[RW]") > -1);
+            var newText = null;
+
+            if (hasRead)
+              return;
+
+            if (hasWrite)
+              newText = parent.text.replace('[RW]', '[R]');
+            else
+              newText = parent.text+"[R]";
+
+            newText = newText.replace('[D]','');
+            $("#nodetree").jstree('rename_node', parent,  newText);
           },
-          separator_before: true
         },
         set_write: {
-          label: "Set write",
+          label: "Set read-write",
           icon: "glyphicon glyphicon-pencil",
           action: function(data) {
-            //return my.ui.request.set("write", false);
             tree = WebOmi.consts.odfTree;
             parent = tree.get_node(data.reference);
-            // console.log(JSON.stringify(parent));
-            var newText = (parent.text.indexOf("[W]") > -1) ? parent.text.replace('[W]', '') : parent.text+"[W]";
+
+            var hasRead = (parent.text.indexOf("[R]") > -1);
+            var hasWrite = (parent.text.indexOf("[RW]") > -1);
+            var newText = null;
+
+            if (hasWrite)
+              return;
+
+            if (hasRead)
+              newText = parent.text.replace('[R]', '[RW]');
+            else
+              newText = parent.text+"[RW]";
+
+            newText = newText.replace('[D]','');
+            $("#nodetree").jstree('rename_node', parent,  newText);
+          }
+        },
+        del_rule: {
+          label: "Delete rule",
+          icon: "glyphicon glyphicon-trash",
+          action: function(data) {
+
+            tree = WebOmi.consts.odfTree;
+            parent = tree.get_node(data.reference);
+
+            var hasRead = (parent.text.indexOf("[R]") > -1);
+            var hasWrite = (parent.text.indexOf("[RW]") > -1);
+            var hasDelete = (parent.text.indexOf("[D]") > -1);
+            var newText = parent.text;
+
+            if (hasDelete)
+              return;
+
+            if (hasRead)
+              newText = parent.text.replace('[R]','');
+            else if (hasWrite)
+              newText = parent.text.replace('[RW]','');
+
+            newText += "[D]";
             $("#nodetree").jstree('rename_node', parent,  newText);
           }
         },
@@ -116,13 +121,7 @@
         force_text: true,
         check_callback: true
       },
-      // grid: {
-      //   columns: [
-      //       {tree:true},
-      //       {cellClass: "jstree-icon jstree-checkbox", width:50}
-      //   ],
-      //   resizable:true
-      // },
+
       types: {
         "default": {
           icon: "odf-objects " + my.icon.objects,
@@ -205,9 +204,10 @@
       my.groupsSelect = $('#groupsSelect');
       my.groupsSelect.chosen({
         no_results_text: "Oops, nothing found!",
-        width: "63%",
+        width: "60%",
         placeholder_text_multiple: "select group"
       }).change(function() {
+
         var selectedValue = $(this).val();
         console.log("Selected:"+selectedValue);
         var disabled = (selectedValue == null);
@@ -218,6 +218,7 @@
         if (disabled == false) {
           WebOmi.formLogic.readRules(selectedValue);
         }
+
       });
       my.addUsersSelect = $('#addUsersSelect');
       my.addUsersSelect.chosen({
@@ -234,32 +235,7 @@
       my.odfTreeDom.jstree(my.odfTreeSettings);
       my.odfTree = my.odfTreeDom.jstree();
       my.odfTree.set_type('Objects', 'objects');
-      // my.requestSelDom.jstree({
-      //   core: {
-      //     themes: {
-      //       icons: false
-      //     },
-      //     multiple: false
-      //   }
-      // });
-      // my.requestSel = my.requestSelDom.jstree();
-      // $('[data-toggle="tooltip"]').tooltip({
-      //   container: 'body'
-      // });
-      // requestTip = function(selector, text) {
-      //   return my.requestSelDom.find(selector).children("a").tooltip({
-      //     title: text,
-      //     placement: "right",
-      //     container: "body",
-      //     trigger: "hover"
-      //   });
-      // };
-      // requestTip("#readReq", "Requests that can be used to get data from server. Use one of the below cases.");
-      // requestTip("#read", "Single request for latest or old data with various parameters.");
-      // requestTip("#subscription", "Create a subscription for data with given interval. Returns requestID which can be used to poll or cancel");
-      // requestTip("#poll", "Request and empty buffered data for callbackless subscription.");
-      // requestTip("#cancel", "Cancel and remove an active subscription.");
-      // requestTip("#write", "Write new data to the server. NOTE: Right click the above odf tree to create new elements.");
+
       my.validators = validators = {};
       validators.nonEmpty = function(s) {
         if (s !== "") {
@@ -374,30 +350,6 @@
         };
       };
       my.ui = {
-        // request: {
-        //   ref: my.requestSelDom,
-        //   set: function(reqName, preventEvent) {
-        //     var tree;
-        //     if (preventEvent == null) {
-        //       preventEvent = true;
-        //     }
-        //     tree = this.ref.jstree();
-        //     if (!tree.is_selected(reqName)) {
-        //       tree.deselect_all();
-        //       return tree.select_node(reqName, preventEvent, false);
-        //     }
-        //   },
-        //   get: function() {
-        //     return this.ref.jstree().get_selected[0];
-        //   }
-        // },
-        // ttl: basicInput('#ttl', function(a) {
-        //   return (v.or(v.greaterThanEq(0), v.equals(-1)))(v.number(v.nonEmpty(a)));
-        // }),
-        // callback: basicInput('#callback', v.url),
-        // requestID: basicInput('#requestID', function(a) {
-        //   return v.integer(v.number(v.nonEmpty(a)));
-        // }),
         odf: {
           ref: my.odfTreeDom,
           get: function() {
@@ -419,57 +371,7 @@
             }
           }
         },
-        // interval: basicInput('#interval', function(a) {
-        //   return (v.or(v.greaterThanEq(0), v.equals(-1), v.equals(-2)))(v.number(v.nonEmpty(a)));
-        // }),
-        // newest: basicInput('#newest', function(a) {
-        //   return (v.greaterThan(0))(v.integer(v.number(v.nonEmpty(a))));
-        // }),
-        // oldest: basicInput('#oldest', function(a) {
-        //   return (v.greaterThan(0))(v.integer(v.number(v.nonEmpty(a))));
-        // }),
-        // begin: $.extend(basicInput('#begin'), {
-        //   set: function(val) {
-        //     return this.ref.data("DateTimePicker").date(val);
-        //   },
-        //   get: function() {
-        //     var mementoTime;
-        //     mementoTime = this.ref.data("DateTimePicker").date();
-        //     if (mementoTime != null) {
-        //       return mementoTime.toISOString();
-        //     } else {
-        //       return null;
-        //     }
-        //   },
-        //   bindTo: function(callback) {
-        //     return this.ref.on("dp.change", (function(_this) {
-        //       return function() {
-        //         return callback(_this.validate());
-        //       };
-        //     })(this));
-        //   }
-        // }),
-        // end: $.extend(basicInput('#end'), {
-        //   set: function(val) {
-        //     return this.ref.data("DateTimePicker").date(val);
-        //   },
-        //   get: function() {
-        //     var mementoTime;
-        //     mementoTime = this.ref.data("DateTimePicker").date();
-        //     if (mementoTime != null) {
-        //       return mementoTime.toISOString();
-        //     } else {
-        //       return null;
-        //     }
-        //   },
-        //   bindTo: function(callback) {
-        //     return this.ref.on("dp.change", (function(_this) {
-        //       return function() {
-        //         return callback(_this.validate());
-        //       };
-        //     })(this));
-        //   }
-        // }),
+
         requestDoc: {
           ref: my.requestCodeMirror,
           get: function() {
@@ -484,24 +386,7 @@
       if (!moment.localeData(language)) {
         language = "en";
       }
-      // my.ui.end.ref.datetimepicker({
-      //   locale: language
-      // });
-      // my.ui.begin.ref.datetimepicker({
-      //   locale: language
-      // });
-      // my.ui.begin.ref.on("dp.change", function(e) {
-      //   return my.ui.end.ref.data("DateTimePicker").minDate(e.date);
-      // });
-      // my.ui.end.ref.on("dp.change", function(e) {
-      //   return my.ui.begin.ref.data("DateTimePicker").maxDate(e.date);
-      // });
-      // my.ui.begin.ref.closest("a.tooltip").on('click', function() {
-      //   return my.ui.begin.ref.data("DateTimePicker").toggle();
-      // });
-      // my.ui.end.ref.closest("a.tooltip").on('click', function() {
-      //   return my.ui.end.ref.data("DateTimePicker").toggle();
-      // });
+
       my.afterJquery = function(fn) {
         return fn();
       };

@@ -298,14 +298,14 @@
                 }
 
                 dataString = dataString.replace(new RegExp(escapeRegExp("[R]"), 'g'), '')
-                                       .replace(new RegExp(escapeRegExp("[W]"), 'g'), '');
+                                       .replace(new RegExp(escapeRegExp("[RW]"), 'g'), '');
                 tree.settings.core.data =JSON.parse(dataString);
 
                 $.each(json_response['rules'], function(i, item) {
 
                     var objectName = item.hid.substring(item.hid.lastIndexOf("/")+1);
                     if (item.writePermissions == "1") {
-                        objectName += "[W]";
+                        objectName += "[RW]";
                     } else {
                         objectName += "[R]";
                     }
