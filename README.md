@@ -23,4 +23,6 @@ Now use [http://localhost:8009/security/Login](http://localhost:8009/security/Lo
 
 Possible problems
 --------------
-1. After authorization AC Webclient does not work and still redirects to the Login page.Solution: Add email you are using to register to `admin_list.txt` (one row per e-mail) and delete `OMISec.db` inside project folder, then restart the module.
+1. After authorization AC Webclient does not work and still redirects to the Login page.
+
+**Solution**: Add email you are using to register to `admin_list.txt` (one row per e-mail) and delete `OMISec.db` inside project folder, then restart the module.
