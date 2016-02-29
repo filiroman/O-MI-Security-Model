@@ -46,8 +46,8 @@
             tree = WebOmi.consts.odfTree;
             parent = tree.get_node(data.reference);
 
-            var hasRead = (parent.text.indexOf("[R]") > -1);
-            var hasWrite = (parent.text.indexOf("[RW]") > -1);
+            var hasRead = (parent.text.indexOf(WebOmi.formLogic.chars.readChar) > -1);
+            var hasWrite = (parent.text.indexOf(WebOmi.formLogic.chars.writeChar) > -1);
             var newText = null;
 
             if (hasRead)
@@ -56,11 +56,11 @@
             $("#nodetree").jstree('deselect_node', parent);
 
             if (hasWrite)
-              newText = parent.text.replace('[RW]', '[R]');
+              newText = parent.text.replace(WebOmi.formLogic.chars.writeChar, WebOmi.formLogic.chars.readChar);
             else
-              newText = parent.text+"[R]";
+              newText = parent.text+WebOmi.formLogic.chars.readChar;
 
-            newText = newText.replace('[D]','');
+            newText = newText.replace(WebOmi.formLogic.chars.deleteChar,'');
             $("#nodetree").jstree('rename_node', parent,  newText);
             $("#nodetree").jstree('select_node', parent);
           },
@@ -72,8 +72,8 @@
             tree = WebOmi.consts.odfTree;
             parent = tree.get_node(data.reference);
 
-            var hasRead = (parent.text.indexOf("[R]") > -1);
-            var hasWrite = (parent.text.indexOf("[RW]") > -1);
+            var hasRead = (parent.text.indexOf(WebOmi.formLogic.chars.readChar) > -1);
+            var hasWrite = (parent.text.indexOf(WebOmi.formLogic.chars.writeChar) > -1);
             var newText = null;
 
             if (hasWrite)
@@ -82,11 +82,11 @@
             $("#nodetree").jstree('deselect_node', parent);
 
             if (hasRead)
-              newText = parent.text.replace('[R]', '[RW]');
+              newText = parent.text.replace(WebOmi.formLogic.chars.readChar, WebOmi.formLogic.chars.writeChar);
             else
-              newText = parent.text+"[RW]";
+              newText = parent.text+WebOmi.formLogic.chars.writeChar;
 
-            newText = newText.replace('[D]','');
+            newText = newText.replace(WebOmi.formLogic.chars.deleteChar,'');
             $("#nodetree").jstree('rename_node', parent,  newText);
             $("#nodetree").jstree('select_node', parent);
           }
@@ -99,9 +99,9 @@
             tree = WebOmi.consts.odfTree;
             parent = tree.get_node(data.reference);
 
-            var hasRead = (parent.text.indexOf("[R]") > -1);
-            var hasWrite = (parent.text.indexOf("[RW]") > -1);
-            var hasDelete = (parent.text.indexOf("[D]") > -1);
+            var hasRead = (parent.text.indexOf(WebOmi.formLogic.chars.readChar) > -1);
+            var hasWrite = (parent.text.indexOf(WebOmi.formLogic.chars.writeChar) > -1);
+            var hasDelete = (parent.text.indexOf(WebOmi.formLogic.chars.deleteChar) > -1);
             var newText = parent.text;
 
             if (hasDelete)
@@ -110,11 +110,11 @@
             $("#nodetree").jstree('deselect_node', parent);
 
             if (hasRead)
-              newText = parent.text.replace('[R]','');
+              newText = parent.text.replace(WebOmi.formLogic.chars.readChar,'');
             else if (hasWrite)
-              newText = parent.text.replace('[RW]','');
+              newText = parent.text.replace(WebOmi.formLogic.chars.writeChar,'');
 
-            newText += "[D]";
+            newText += WebOmi.formLogic.chars.deleteChar;
             $("#nodetree").jstree('rename_node', parent,  newText);
             $("#nodetree").jstree('select_node', parent);
           }

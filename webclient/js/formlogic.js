@@ -9,6 +9,11 @@
 
     my.reverseProxyPath = "/security";
     my.authServer = "http://localhost:8009" + my.reverseProxyPath;
+    my.chars = {
+      readChar: "[R]",
+      writeChar: "[RW]",
+      deleteChar: "[D]"
+    };
     my.setRequest = function(xml) {
       var mirror;
       mirror = WebOmi.consts.requestCodeMirror;
@@ -297,17 +302,17 @@
                     return str.replace(/([.*+?^=!:${}()|\[\]\/\\])/g, "\\$1");
                 }
 
-                dataString = dataString.replace(new RegExp(escapeRegExp("[R]"), 'g'), '')
-                                       .replace(new RegExp(escapeRegExp("[RW]"), 'g'), '');
+                dataString = dataString.replace(new RegExp(escapeRegExp(my.chars.readChar), 'g'), '')
+                                       .replace(new RegExp(escapeRegExp(my.chars.writeChar), 'g'), '');
                 tree.settings.core.data =JSON.parse(dataString);
 
                 $.each(json_response['rules'], function(i, item) {
 
                     var objectName = item.hid.substring(item.hid.lastIndexOf("/")+1);
                     if (item.writePermissions == "1") {
-                        objectName += "[RW]";
+                        objectName += my.chars.writeChar;
                     } else {
-                        objectName += "[R]";
+                        objectName += my.chars.readChar;
                     }
 
                     setAttribute(tree.settings.core.data[0], item.hid, objectName);
