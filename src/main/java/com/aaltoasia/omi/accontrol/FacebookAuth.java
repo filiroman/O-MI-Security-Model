@@ -32,16 +32,33 @@ public class FacebookAuth {
     private static final Token EMPTY_TOKEN = null;
     private final OAuthService service;
 
-    private static final FacebookAuth instance = new FacebookAuth();
+    private static final FacebookAuth instance = createInstance();
     public static FacebookAuth getInstance() {
         return instance;
     }
 
-    private FacebookAuth()
+    private static FacebookAuth createInstance()
+    {
+        try {
+            return new FacebookAuth();
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            System.exit(-1);
+        }
+        return null;
+    }
+
+    private FacebookAuth() throws Exception
     {
         logger.setLevel(Level.INFO);
 
         this.accessToken = null;
+
+
+        if (apiKey=="" || apiSecret=="" || apiCallback=="")
+        {
+            throw new Exception("No facebook app credentials found. Please put it  inside `src/main/java/com/aaltoasia/omi/accontrol/FacebookAuth.java`");
+        }
 
         this.service = new ServiceBuilder()
                 .provider(FacebookApi.class)

@@ -19,3 +19,9 @@ Installation
 - Execute `run.sh` to run the module
 
 Now use [http://localhost:8009/security/Login](http://localhost:8009/security/Login) for Login and Register new users, [http://localhost:8009/security/AC](http://localhost:8009/security/AC) for Access Control and [http://localhost:8009/html/webclient/index.html](http://localhost:8009/html/webclient/index.html) for standard O-MI Node Webclient.
+
+
+Possible problems
+--------------
+1. After authorization AC Webclient does not work and still redirects to the Login page.
+    Solution: Add email you are using to register to `admin_list.txt` (one row per e-mail) and delete `OMISec.db` inside project folder, then restart the module.
