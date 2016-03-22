@@ -105,16 +105,83 @@ public class PermissionService extends HttpServlet {
 //            for (Cookie ck: cookies) {
 //                System.out.println(ck.getName()+ck.getValue());
 //            }
+
+            boolean haveCredentials = false;
+            String userEmail = null;
+
             HttpSession httpSession = request.getSession(false);
             if (httpSession == null) {
                 logger.info("Session is not found!");
-                response.getWriter().write("false");
+                haveCredentials = false;
             } else {
-                logger.info("Valid session is found!");
-                String userEmail = (String)httpSession.getAttribute("userID");
+                haveCredentials = true;
+                userEmail = (String)httpSession.getAttribute("userID");
+            }
 
-                //logger.info("UserCredential: "+userEmail);
-                boolean isWrite = request.getParameter("write").equalsIgnoreCase("true");
+            //logger.info("UserCredential: "+userEmail);
+            boolean isWrite = request.getParameter("write").equalsIgnoreCase("true");
+
+            StringBuffer jb = new StringBuffer();
+            String line = null;
+            try {
+                BufferedReader reader = request.getReader();
+                while ((line = reader.readLine()) != null)
+                    jb.append(line);
+            } catch (Exception e) {
+                logger.severe(e.getMessage());
+            }
+
+
+            JsonObject paths = new JsonParser().parse(jb.toString()).getAsJsonObject();
+
+            if (!haveCredentials) {
+                JsonPrimitive userCred = paths.getAsJsonPrimitive("user");
+                if (userCred == null) {
+                    response.getWriter().write("false");
+                    return;
+                }
+                userEmail = userCred.getAsString();
+            }
+
+            JsonArray json_paths = paths.getAsJsonArray("paths");
+
+            String logString = "";
+
+            ArrayList<String> paths_to_check = new ArrayList<>(json_paths.size());
+            for (int i = 0; i < json_paths.size(); i++) {
+                String nextPath = json_paths.get(i).getAsString();
+                logString += nextPath+"\n";
+                paths_to_check.add(nextPath);
+            }
+
+            logger.info("Received resource access requests." +
+                    "\nUserIdentifier:"+userEmail+
+                    "\nPaths:\n"+logString+
+                    "isWrite:"+isWrite);
+
+            boolean result = AuthService.getInstance().checkPermissions(paths_to_check, userEmail, isWrite);
+//                logger.info("RESULT:"+result);
+            response.getWriter().write(result ? "true" : "false");
+
+        } else if (readPaths != null) {
+
+            logger.info("Received Tree Paths request");
+
+            boolean haveCredentials = false;
+            String userEmail = null;
+
+            HttpSession httpSession = request.getSession(false);
+            if (httpSession == null) {
+                logger.info("Session is not found!");
+                haveCredentials = false;
+            } else {
+                haveCredentials = true;
+                userEmail = (String)httpSession.getAttribute("userID");
+            }
+
+            if (!haveCredentials)
+            {
+                // try to fetch username from POST body
 
                 StringBuffer jb = new StringBuffer();
                 String line = null;
@@ -122,44 +189,16 @@ public class PermissionService extends HttpServlet {
                     BufferedReader reader = request.getReader();
                     while ((line = reader.readLine()) != null)
                         jb.append(line);
+                    userEmail = jb.toString();
+                    haveCredentials = true;
                 } catch (Exception e) {
                     logger.severe(e.getMessage());
                 }
-
-
-                JsonObject paths = new JsonParser().parse(jb.toString()).getAsJsonObject();
-                JsonArray json_paths = paths.getAsJsonArray("paths");
-
-                String logString = "";
-
-                ArrayList<String> paths_to_check = new ArrayList<>(json_paths.size());
-                for (int i = 0; i < json_paths.size(); i++) {
-                    String nextPath = json_paths.get(i).getAsString();
-                    logString += nextPath+"\n";
-                    paths_to_check.add(nextPath);
-                }
-
-                logger.info("Received resource access requests." +
-                        "\nUserIdentifier:"+userEmail+
-                        "\nPaths:\n"+logString+
-                        "isWrite:"+isWrite);
-
-                boolean result = AuthService.getInstance().checkPermissions(paths_to_check, userEmail, isWrite);
-//                logger.info("RESULT:"+result);
-                response.getWriter().write(result ? "true" : "false");
             }
 
-        } else if (readPaths != null) {
 
-            logger.info("Received Tree Paths request");
-
-            HttpSession httpSession = request.getSession(false);
-            if (httpSession == null) {
-                logger.info("Session is not found!");
-                response.getWriter().write("false");
-            } else {
-                logger.info("Valid session is found!");
-                String userEmail = (String)httpSession.getAttribute("userID");
+            if (haveCredentials) {
+                logger.info("Valid session or user credentials are found!");
 
                 if (AuthService.getInstance().isAdministrator(userEmail))
                 {
@@ -174,6 +213,8 @@ public class PermissionService extends HttpServlet {
                 String res = wrapJson(paths, "paths");
                 logger.info("Paths:" + res);
                 response.getWriter().write(res);
+            } else {
+                response.getWriter().write("false");
             }
 
         } else if (writeRules != null) {

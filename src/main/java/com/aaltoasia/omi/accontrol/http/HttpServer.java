@@ -3,9 +3,7 @@ package com.aaltoasia.omi.accontrol.http;
 import com.aaltoasia.omi.accontrol.AuthService;
 import com.aaltoasia.omi.accontrol.PermissionService;
 import com.aaltoasia.omi.accontrol.AuthServlet;
-import org.eclipse.jetty.server.Server;
-import org.eclipse.jetty.server.ServerConnector;
-import org.eclipse.jetty.server.SessionManager;
+import org.eclipse.jetty.server.*;
 import org.eclipse.jetty.server.session.HashSessionIdManager;
 import org.eclipse.jetty.server.session.HashSessionManager;
 import org.eclipse.jetty.server.session.SessionHandler;
@@ -90,10 +88,22 @@ public class HttpServer implements Runnable
     {
         //Server Setup
         Server server = new Server();
-        server.dumpStdErr();
-        ServerConnector connector = new ServerConnector(server);
+//        server.dumpStdErr();
+
+        // Create HTTP Config
+        HttpConfiguration httpConfig = new HttpConfiguration();
+
+        // Add support for X-Forwarded headers
+        httpConfig.addCustomizer( new org.eclipse.jetty.server.ForwardedRequestCustomizer() );
+
+        // Create the http connector
+        HttpConnectionFactory connectionFactory = new HttpConnectionFactory( httpConfig );
+        ServerConnector connector = new ServerConnector(server, connectionFactory);
+
         connector.setPort(port);
-        server.addConnector(connector);
+
+        server.setConnectors( new ServerConnector[] { connector } );
+//        server.addConnector(connector);
 
         // The filesystem paths we will map
         String homePath = System.getProperty("user.home");

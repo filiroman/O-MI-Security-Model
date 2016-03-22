@@ -8,7 +8,8 @@
     my = WebOmi.formLogic = {};
 
     my.reverseProxyPath = "/security";
-    my.authServer = "http://localhost:8009" + my.reverseProxyPath;
+    my.scheme = "https://";
+    my.authServer = my.scheme + "localhost" + my.reverseProxyPath;
     my.chars = {
       readChar: "[R]",
       writeChar: "[RW]",
@@ -50,20 +51,20 @@
       return WebOmi.consts.responseDiv.slideUp();
     };
     my.setResponse = function(xml) {
-      var mirror;
-      mirror = WebOmi.consts.responseCodeMirror;
-      if (typeof xml === "string") {
-        mirror.setValue(xml);
-      } else {
-        mirror.setValue(new XMLSerializer().serializeToString(xml));
-      }
-      mirror.autoFormatAll();
-      WebOmi.consts.responseDiv.slideDown({
-        complete: function() {
-          return mirror.refresh();
-        }
-      });
-      return mirror.refresh();
+      // var mirror;
+      // mirror = WebOmi.consts.responseCodeMirror;
+      // if (typeof xml === "string") {
+      //   mirror.setValue(xml);
+      // } else {
+      //   mirror.setValue(new XMLSerializer().serializeToString(xml));
+      // }
+      // mirror.autoFormatAll();
+      // WebOmi.consts.responseDiv.slideDown({
+      //   complete: function() {
+      //     return mirror.refresh();
+      //   }
+      // });
+      // return mirror.refresh();
     };
     my.send = function(callback) {
       var consts, request, server;

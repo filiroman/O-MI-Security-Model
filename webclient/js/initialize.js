@@ -239,7 +239,7 @@
       my.resetAllBtn = $('#resetall');
       my.progressBar = $('.response .progress-bar');
       loc = window.location.href;
-      my.serverUrl.val("http://localhost:8009");
+      my.serverUrl.val("https://localhost");
       //my.serverUrl.val(loc.substr(0, loc.indexOf("html/")));
       my.odfTreeDom.jstree(my.odfTreeSettings);
       my.odfTree = my.odfTreeDom.jstree();
