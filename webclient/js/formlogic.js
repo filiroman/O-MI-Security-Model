@@ -9,7 +9,8 @@
 
     my.reverseProxyPath = "/security";
     my.scheme = "https://";
-    my.authServer = my.scheme + "localhost" + my.reverseProxyPath;
+    //my.authServer = my.scheme + "localhost" + my.reverseProxyPath;
+    my.authserver = my.reverseProxyPath;
     my.chars = {
       readChar: "[R]",
       writeChar: "[RW]",
