@@ -18,8 +18,9 @@ import javax.servlet.http.HttpSession;
 import java.io.File;
 import java.io.IOException;
 import java.util.EnumSet;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Created by romanfilippov on 13/01/16.
@@ -27,6 +28,8 @@ import java.util.logging.Logger;
 public class HttpServer implements Runnable
 {
     int port;
+
+    private static final Logger logger = LoggerFactory.getLogger(HttpServer.class);
 
     public HttpServer(int port){
         this.port = port;
@@ -59,15 +62,15 @@ public class HttpServer implements Runnable
                 hasRights = AuthService.getInstance().isAdministrator(email);
 
                 if (hasRights)
-                    System.out.println("User has rights to enter AC Console");
+                    logger.info("User has rights to enter AC Console");
                 else
-                    System.out.println("User does not have rights to enter AC Console");
+                    logger.info("User does not have rights to enter AC Console");
 
             }
 
             if (hasRights || loginRequest || permissionRequest) {
 //                if (loggedIn)
-//                    System.out.println("Attribute:"+ session.getAttribute("userID"));
+//                    logger.info("Attribute:"+ session.getAttribute("userID"));
 
                 chain.doFilter(request, response);
             } else {
@@ -156,7 +159,7 @@ public class HttpServer implements Runnable
         }
         catch (Throwable t)
         {
-            Logger.getLogger(this.getClass().getName()).log(Level.SEVERE, null, t.getMessage());
+            logger.warn(t.getMessage());
         }
     }
 

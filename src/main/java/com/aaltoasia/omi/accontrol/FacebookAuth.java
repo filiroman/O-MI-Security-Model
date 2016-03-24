@@ -9,8 +9,8 @@ import org.scribe.builder.api.FacebookApi;
 import org.scribe.model.*;
 import org.scribe.oauth.OAuthService;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Helper class that handles Facebook Authentication
@@ -23,7 +23,7 @@ public class FacebookAuth {
     private final String apiSecret = "";
     private final String apiCallback = "";
 
-    private final Logger logger = Logger.getLogger(this.getClass().getName());
+    private final Logger logger = LoggerFactory.getLogger(this.getClass().getName());
 
     // see https://developers.facebook.com/docs/facebook-login/permissions
     private final String fbScope = "email,public_profile";
@@ -50,7 +50,7 @@ public class FacebookAuth {
 
     private FacebookAuth() throws Exception
     {
-        logger.setLevel(Level.INFO);
+//        logger.setLevel(Level.INFO);
 
         this.accessToken = null;
 
@@ -103,7 +103,7 @@ public class FacebookAuth {
             newUser.email = userEmail;
             return newUser;
         } catch (Exception ex) {
-            logger.severe(ex.getCause() + ":" + ex.getMessage());
+            logger.warn(ex.getCause() + ":" + ex.getMessage());
             return null;
         }
     }
@@ -114,7 +114,7 @@ public class FacebookAuth {
             return DBHelper.getInstance().createUserIfNotExists(newUser);
 
         } catch (Exception ex) {
-            logger.severe(ex.getCause() + ":" + ex.getMessage());
+            logger.warn(ex.getCause() + ":" + ex.getMessage());
             return false;
         }
     }
@@ -125,7 +125,7 @@ public class FacebookAuth {
             return DBHelper.getInstance().createUserIfNotExists(newUser);
 
         } catch (Exception ex) {
-            logger.severe(ex.getCause() + ":" + ex.getMessage());
+            logger.warn(ex.getCause() + ":" + ex.getMessage());
             return false;
         }
     }

@@ -8,22 +8,22 @@ import com.aaltoasia.omi.accontrol.db.objects.OMIUser;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
-import java.io.PrintWriter;
 import java.sql.*;
 import java.util.ArrayList;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 
 /**
  * Created by romanfilippov on 19/11/15.
  */
 public class DBHelper {
 
-    private final Logger logger = Logger.getLogger(this.getClass().getName());
+    private final Logger logger = LoggerFactory.getLogger(this.getClass().getName());
 
     private static final DBHelper instance = new DBHelper();
     private DBHelper() {
-        logger.setLevel(Level.INFO);
+//        logger.setLevel(Level.INFO);
         configureDB();
     }
 
@@ -86,7 +86,7 @@ public class DBHelper {
 
         } catch (SQLException ex)
         {
-            logger.severe(ex.getMessage());
+            logger.warn(ex.getMessage());
         }
     }
 
@@ -102,7 +102,7 @@ public class DBHelper {
 
         } catch (SQLException ex)
         {
-            logger.severe(ex.getMessage());
+            logger.warn(ex.getMessage());
             return false;
         }
     }
@@ -117,7 +117,7 @@ public class DBHelper {
                 line = br.readLine();
             }
         } catch (Exception ex) {
-            logger.severe(ex.getMessage());
+            logger.warn(ex.getMessage());
         }
     }
 
@@ -135,7 +135,7 @@ public class DBHelper {
 
         } catch (SQLException ex)
         {
-            logger.severe(ex.getMessage());
+            logger.warn(ex.getMessage());
             return -1;
         }
     }
@@ -153,7 +153,7 @@ public class DBHelper {
 
         } catch (SQLException ex)
         {
-            logger.severe(ex.getMessage());
+            logger.warn(ex.getMessage());
             return false;
         }
     }
@@ -179,7 +179,7 @@ public class DBHelper {
 
         } catch (SQLException ex)
         {
-            logger.severe(ex.getMessage());
+            logger.warn(ex.getMessage());
             return false;
         }
     }
@@ -219,7 +219,7 @@ public class DBHelper {
 
         } catch (SQLException ex)
         {
-            logger.severe(ex.getMessage());
+            logger.warn(ex.getMessage());
             return null;
         }
     }
@@ -261,7 +261,7 @@ public class DBHelper {
 
         } catch (SQLException ex)
         {
-            logger.severe(ex.getMessage());
+            logger.warn(ex.getMessage());
             return null;
         }
     }
@@ -280,7 +280,7 @@ public class DBHelper {
             return -1;
         } catch (SQLException ex)
         {
-            logger.severe(ex.getMessage());
+            logger.warn(ex.getMessage());
             return -1;
         }
     }
@@ -299,7 +299,7 @@ public class DBHelper {
 
         } catch (SQLException ex)
         {
-            logger.severe(ex.getMessage());
+            logger.warn(ex.getMessage());
             return false;
         }
     }
@@ -328,7 +328,7 @@ public class DBHelper {
 
         } catch (SQLException ex)
         {
-            logger.severe(ex.getMessage());
+            logger.warn(ex.getMessage());
             return false;
         }
     }
@@ -347,7 +347,7 @@ public class DBHelper {
 
         } catch (SQLException ex)
         {
-            logger.severe(ex.getMessage());
+            logger.warn(ex.getMessage());
             return false;
         }
     }
@@ -365,7 +365,7 @@ public class DBHelper {
 
         } catch (SQLException ex)
         {
-            logger.severe(ex.getMessage());
+            logger.warn(ex.getMessage());
             return false;
         }
     }
@@ -402,7 +402,7 @@ public class DBHelper {
 
 //        } catch (SQLException ex)
 //        {
-//            logger.severe(ex.getMessage());
+//            logger.warn(ex.getMessage());
 //            return false;
 //        }
     }
@@ -428,7 +428,7 @@ public class DBHelper {
 
         } catch (SQLException ex)
         {
-            logger.severe(ex.getMessage());
+            logger.warn(ex.getMessage());
             return false;
         }
     }
@@ -449,7 +449,7 @@ public class DBHelper {
 
         } catch (SQLException ex)
         {
-            logger.severe(ex.getMessage());
+            logger.warn(ex.getMessage());
             return false;
         }
     }
@@ -478,7 +478,7 @@ public class DBHelper {
 
         } catch (SQLException ex)
         {
-            logger.severe(ex.getMessage());
+            logger.warn(ex.getMessage());
             return null;
         }
     }
@@ -497,7 +497,7 @@ public class DBHelper {
 
         } catch (SQLException ex)
         {
-            logger.severe(ex.getMessage());
+            logger.warn(ex.getMessage());
             return false;
         }
     }
@@ -524,7 +524,7 @@ public class DBHelper {
 
         } catch (SQLException ex)
         {
-            logger.severe(ex.getMessage());
+            logger.warn(ex.getMessage());
             return null;
         }
     }
@@ -565,7 +565,7 @@ public class DBHelper {
 
         } catch (SQLException ex)
         {
-            logger.severe(ex.getMessage());
+            logger.warn(ex.getMessage());
             return false;
         }
     }
@@ -604,7 +604,7 @@ public class DBHelper {
             return rules;
 
         } catch (SQLException ex) {
-            logger.severe(ex.getMessage());
+            logger.warn(ex.getMessage());
             return null;
         }
     }
@@ -687,7 +687,7 @@ public class DBHelper {
 
         } catch (SQLException ex)
         {
-            logger.severe(ex.getMessage());
+            logger.warn(ex.getMessage());
             return false;
         }
     }
@@ -704,7 +704,7 @@ public class DBHelper {
             Class.forName("org.sqlite.JDBC");
             connection = DriverManager.getConnection(jdbcDriver);
         } catch ( Exception e ) {
-            logger.severe( e.getClass().getName() + ": " + e.getMessage() );
+            logger.warn( e.getClass().getName() + ": " + e.getMessage() );
             return false;
         }
 

@@ -6,8 +6,8 @@ import com.aaltoasia.omi.accontrol.db.objects.OMIObject;
 import com.aaltoasia.omi.accontrol.db.objects.OMIUser;
 
 import java.util.ArrayList;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
@@ -16,14 +16,14 @@ import java.util.logging.Logger;
 public class AuthService {
 
     private static final AuthService instance = new AuthService();
-    private final Logger logger = Logger.getLogger(this.getClass().getName());
+    private final Logger logger = LoggerFactory.getLogger(this.getClass().getName());
 
     private AuthService() {
 
-        logger.setLevel(Level.INFO);
+//        logger.setLevel(Level.INFO);
         if (DBHelper.getInstance() == null)
         {
-            logger.warning("Can not initiate DB. Exiting...");
+            logger.error("Can not initiate DB. Exiting...");
 
             System.exit(0);
         }
