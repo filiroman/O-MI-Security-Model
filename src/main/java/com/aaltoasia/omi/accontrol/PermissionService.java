@@ -15,19 +15,19 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringReader;
 import java.util.ArrayList;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Created by romanfilippov on 23/11/15.
  */
 public class PermissionService extends HttpServlet {
 
-    private final Logger logger = Logger.getLogger(this.getClass().getName());
+    private final Logger logger = LoggerFactory.getLogger(this.getClass().getName());
 
     public void init() throws ServletException
     {
-        logger.setLevel(Level.INFO);
+//        logger.setLevel(Level.INFO);
         // Do required initialization
     }
 
@@ -94,6 +94,7 @@ public class PermissionService extends HttpServlet {
 
         String writeRules = request.getParameter("writeRules");
         String writeGroups = request.getParameter("writeGroups");
+        String writeUsers = request.getParameter("writeUsers");
         String readPaths = request.getParameter("getPaths");
         String ac = request.getParameter("ac");
 
@@ -128,7 +129,7 @@ public class PermissionService extends HttpServlet {
                 while ((line = reader.readLine()) != null)
                     jb.append(line);
             } catch (Exception e) {
-                logger.severe(e.getMessage());
+                logger.error(e.getMessage());
             }
 
 
@@ -192,7 +193,7 @@ public class PermissionService extends HttpServlet {
                     userEmail = jb.toString();
                     haveCredentials = true;
                 } catch (Exception e) {
-                    logger.severe(e.getMessage());
+                    logger.error(e.getMessage());
                 }
             }
 
@@ -229,7 +230,7 @@ public class PermissionService extends HttpServlet {
                 while ((line = reader.readLine()) != null)
                     jb.append(line);
             } catch (Exception e) {
-                logger.severe(e.getMessage());
+                logger.error(e.getMessage());
             }
 
             StringReader reader = new StringReader(jb.toString());
@@ -260,7 +261,7 @@ public class PermissionService extends HttpServlet {
                 response.getWriter().write(answer);
 
             } catch (Exception ex) {
-                logger.severe(ex.getCause() + ex.getMessage());
+                logger.error(ex.getCause() + ex.getMessage());
                 response.getWriter().write("ERROR!" + ex.getCause() + ex.getMessage());
             }
         } else if (writeGroups != null) {
@@ -272,7 +273,7 @@ public class PermissionService extends HttpServlet {
                 while ((line = reader.readLine()) != null)
                     jb.append(line);
             } catch (Exception e) {
-                logger.severe(e.getMessage());
+                logger.error(e.getMessage());
             }
 
 
@@ -315,6 +316,48 @@ public class PermissionService extends HttpServlet {
                     response.getWriter().write("{\"error\":\"group was not updated\"}");
             }
 
+        } else if (writeUsers != null) {
+
+            logger.info("Received new user request!");
+
+            StringBuffer jb = new StringBuffer();
+            String line = null;
+            try {
+                BufferedReader reader = request.getReader();
+                while ((line = reader.readLine()) != null)
+                    jb.append(line);
+            } catch (Exception e) {
+                logger.error(e.getMessage());
+            }
+
+
+            JsonObject newUser = new JsonParser().parse(jb.toString()).getAsJsonObject();
+            String userName = newUser.getAsJsonPrimitive("username").getAsString();
+            String userEmail = newUser.getAsJsonPrimitive("email").getAsString();
+
+            OMIUser user = new OMIUser();
+            user.email = userEmail;
+            user.username = userName;
+
+            boolean userExists = DBHelper.getInstance().checkIfUserExists(user);
+
+            if (!userExists) {
+
+                logger.info("Creating new user for name:"+userName +" / email:"+userEmail);
+
+                int userID = DBHelper.getInstance().createUser(user);
+
+                if (userID == -1) {
+                    response.getWriter().write("{\"error\":{\"type\":\"name\", \"msg\":\"Error while creating new user\"}}");
+                } else {
+
+                    response.getWriter().write("{\"result\":\"ok\",\"userID\":\"" + userID + "\"}");
+                }
+            } else {
+
+                logger.info("User exists already for email:"+userEmail);
+                response.getWriter().write("{\"error\":{\"type\":\"email\", \"msg\":\"User with given email already registered\"}}");
+            }
         }
     }
 

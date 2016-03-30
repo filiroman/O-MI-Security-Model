@@ -205,6 +205,7 @@
       my.sendBtn = $('#send');
       // Save permissions button
       my.saveBtn = $('#sendPerm');
+      my.addUserBtn = $('#addUser');
 
       my.addGroupBtn = $('#groupAddButton');
       my.editGroupBtn = $('#groupEditButton');

@@ -33,13 +33,6 @@ public class AuthService {
         return instance;
     }
 
-    public OMIUser authenticateUser(String userData)
-    {
-        OMIUser user = new OMIUser(OMIUser.OMIUserType.OAuth);
-        user.isUserAuthorized = true;
-
-        return user;
-    }
 
     private void writePermissionToDB(String objName, String xPath, int groupID, boolean objectRule)
     {

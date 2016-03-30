@@ -509,7 +509,7 @@ public class DBHelper {
             ResultSet rs = stmt.executeQuery( "SELECT * FROM USERS;" );
             ArrayList<OMIUser> resultsArray = new ArrayList<OMIUser>();
             while ( rs.next() ) {
-                OMIUser nextUser = new OMIUser(OMIUser.OMIUserType.Unknown);
+                OMIUser nextUser = new OMIUser();
                 nextUser.id = rs.getInt("ID");
                 nextUser.username = rs.getString("USERNAME");
                 nextUser.email = rs.getString("EMAIL");
@@ -526,6 +526,50 @@ public class DBHelper {
         {
             logger.warn(ex.getMessage());
             return null;
+        }
+    }
+
+    public boolean checkIfUserExists(OMIUser user) {
+
+        try {
+
+            PreparedStatement stmt = connection.prepareStatement("SELECT * FROM USERS WHERE EMAIL=?");
+            stmt.setString(1, user.email);
+            ResultSet rs = stmt.executeQuery();
+
+            return rs.isBeforeFirst();
+
+        } catch (SQLException ex)
+        {
+            logger.warn(ex.getMessage());
+            return false;
+        }
+
+    }
+
+    public int createUser(OMIUser user)
+    {
+        try {
+            PreparedStatement stmt = connection.prepareStatement("INSERT INTO USERS(USERNAME,EMAIL) VALUES(?,?)");
+            stmt.setString(1,user.username);
+            stmt.setString(2,user.email);
+            stmt.executeUpdate();
+
+            int res = stmt.getGeneratedKeys().getInt(1);
+            stmt = connection.prepareStatement("INSERT INTO USERS_GROUPS_RELATION(USER_ID,GROUP_ID) VALUES(?,?)");
+            stmt.setInt(1, res);
+            stmt.setInt(2, DEFAULT_GROUP_ID);
+
+            stmt.executeUpdate();
+            stmt.close();
+
+            logger.info("User with name:"+user.username+" and email:" +user.email + " successfully created. ID="+res);
+            return res;
+
+        } catch (SQLException ex)
+        {
+            logger.warn(ex.getMessage());
+            return -1;
         }
     }
 

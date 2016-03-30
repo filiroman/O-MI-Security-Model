@@ -7,15 +7,15 @@
     var my;
     my = WebOmi.formLogic = {};
 
-    my.reverseProxyPath = "/security";
-    my.scheme = "https://";
-    //my.authServer = my.scheme + "localhost" + my.reverseProxyPath;
-    my.authserver = my.reverseProxyPath;
+    // my.reverseProxyPath = "/security";
+    // my.scheme = "https://";
+    my.authServer = "/security";
     my.chars = {
       readChar: "[R]",
       writeChar: "[RW]",
       deleteChar: "[D]"
     };
+
     my.setRequest = function(xml) {
       var mirror;
       mirror = WebOmi.consts.requestCodeMirror;
@@ -179,6 +179,57 @@
         }
       });
     };
+
+    my.updateUsers = function(newUserItem, success) {
+      var consts, request, server;
+      consts = WebOmi.consts;
+      server = my.authServer + "/PermissionService?writeUsers=true";
+      request = JSON.stringify(newUserItem);
+      console.log(request);
+      return $.ajax({
+        type: "POST",
+        url: server,
+        data: request,
+        contentType: "application/json",
+        processData: false,
+        dataType: "text",
+        error: function(response) {
+          my.setResponse(response.responseText);
+        },
+        success: function(response) {
+          my.setResponse(response);
+
+          console.log(response);
+          var json_response = $.parseJSON(response);
+
+          if (json_response['userID'] != null) {
+            newUserItem['id'] = json_response['userID'];
+            WebOmi.formLogic.readedUsers['users'].push(newUserItem);
+
+            // add new user to users selector
+            $('<option value="'+ newUserItem['id'] +'">').text(newUserItem.username + " [" + newUserItem.email +"]").appendTo('#addUsersSelect');
+            $("#addUsersSelect").trigger("chosen:updated");
+
+            return success(null);
+
+          } else {
+
+            var err = json_response['error'];
+            return success(err);
+
+          }
+          // $("#groupsSelect").trigger("chosen:updated");
+          // if (newGroupItem['id'] != null) {
+          //   $("#groupsSelect").val(newGroupItem['id']).trigger("change");
+          //   $("#groupsSelect").trigger("chosen:updated");
+          // }
+          //
+          // window.setTimeout((function() {
+          //   return consts.progressBar.show();
+          // }), 2000);
+        }
+      });
+    }
 
     my.updateGroups = function(newGroupItem) {
       var consts, request, server;
@@ -533,6 +584,9 @@
       });
       consts.addGroupBtn.on('click', function() {
         return WebOmi.consts.groupItemDialog.modal("show");
+      });
+      consts.addUserBtn.on('click', function() {
+        return WebOmi.consts.userItemDialog.modal("show");
       });
       consts.deleteGroupBtn.on('click', function() {
         var result = confirm("Do you want to delete the group?");

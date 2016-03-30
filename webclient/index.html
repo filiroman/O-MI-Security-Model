@@ -52,8 +52,8 @@
 	<script type="text/javascript" src="js/requests.js"></script>
 	<script type="text/javascript" src="js/formlogic.js"></script>
 	<script type="text/javascript" src="js/omi.js"></script>
-	<script type="text/javascript" src="js/newInfoItemForm.js"></script>
 	<script type="text/javascript" src="js/newGroupItemForm.js"></script>
+	<script type="text/javascript" src="js/newUserItemForm.js"></script>
 
 </head>
 <body>
@@ -189,6 +189,24 @@
 					<button id="sendPerm" type="button" class="btn btn-md btn-primary">
 						Save
 						<span class="glyphicon glyphicon-send" aria-hidden="true"></span>
+					</button>
+				</div>
+      </div>
+
+			<div class="panel panel-default">
+        <div class="panel-heading">
+          <h4 class="panel-title">
+            <b>
+              <span class="glyphicon glyphicon-user" aria-hidden="true"></span>
+              Users
+              <!-- <small>Select nodes for which you would like to change policies</small> -->
+            </b>
+          </h4>
+        </div>
+				<div class="panel-body">
+					<!-- <input type="search" class="form-control-static" id="groupName" placeholder="group name"/> -->
+					<button id="addUser" type="button" class="btn btn-md btn-primary">
+						Add user
 					</button>
 				</div>
       </div>
@@ -397,199 +415,8 @@
       </div>
     </div>
   </div></div>
-  <div class="modal fade" id="newInfoItem" data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="newInfoItemLabel">
-    <div class="modal-dialog" role="document">
-      <div class="modal-content">
-        <div class="modal-header">
-          <button type="button" class="close newInfoCancel" style="font-size:32px;line-height:0.8" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-          <h4 class="modal-title" id="newInfoItemLabel">New InfoItem</h4>
-        </div>
-        <div class="modal-body">
-          <form>
-            <input type="hidden" name="parent" id="infoItemParent">
-            <small>* required</small>
-            <div class="form-group">
-              <label for="infoItemName" class="control-label ">Name*</label>
-              <a data-toggle="tooltip" title="Enter some name identifier for the InfoItem." data-placement="top">
-                <input name="name" type="text" class="form-control" id="infoItemName">
-              </a>
-            </div>
-            <div class="form-group">
-              <label for="infoItemDescription" class="control-label">Description</label>
-              <a data-toggle="tooltip" title="Optionally enter short description about the InfoItem. (Metadata)" data-placement="top">
-                <input name="description" type="text" class="form-control" id="infoItemDescription">
-              </a>
-            </div>
 
-            <div class="panel panel-default">
-              <div class="panel-heading">
-                <h4 class="panel-title">
-                  <b>Values*</b>
-                </h4>
-              </div>
-              <div id="newValues" class="panel-body">
-                <div class="well value-group form-group container-fluid">
-                  <div class="row">
-                  <label class="control-label col-md-12">Value*
-                    <a data-toggle="tooltip" title="Enter a new value for this InfoItem. It might be required, otherwise the server might not save it." data-placement="top">
-                      <input name="value" type="text" class="form-control">
-                    </a>
-                  </label>
-                  </div>
-                  <div class="row">
-                    <label class="control-label col-md-6">Type
-                      <select name="valuetype" class="form-control"
-                        data-toggle="tooltip" title="Optionally select xml type to be saved as a metadata for this value." data-placement="top">
-                        <option value="">[no type]</option>
-                        <option>int</option>
-                        <option>byte</option>
-                        <option>short</option>
-                        <option>long</option>
-                        <option>float</option>
-                        <option>double</option>
-                        <option>integer</option>
-                        <option>nonPositiveInteger</option>
-                        <option>negativeInteger</option>
-                        <option>nonNegativeInteger</option>
-                        <option>positiveInteger</option>
-                        <option>unsignedLong</option>
-                        <option>unsignedInt</option>
-                        <option>unsignedShort</option>
-                        <option>unsignedByte</option>
-                        <option>decimal</option>
-                        <option>boolean</option>
-                        <option selected>string</option>
-                        <option>normalizedString</option>
-                        <option>token</option>
-                        <option>language</option>
-                        <option>Name</option>
-                        <option>NCName</option>
-                        <option>NMTOKEN</option>
-                        <option>NMTOKENS</option>
-                        <option>ID</option>
-                        <option>IDREF</option>
-                        <option>IDREFS</option>
-                        <option>ENTITY</option>
-                        <option>ENTITIES</option>
-                        <option>hexBinary</option>
-                        <option>base64Binary</option>
-                        <option>anyURI</option>
-                        <option>QName</option>
-                        <option>NOTATION</option>
-                        <option>duration</option>
-                        <option>dateTime</option>
-                        <option>time</option>
-                        <option>gYearMonth</option>
-                        <option>gYear</option>
-                        <option>gMonthDay</option>
-                        <option>gDay</option>
-                        <option>gMonth</option>
-                      </select>
-                    </label>
-                    <div class="col-md-6">
-                      <label class="control-label" style="margin-bottom:0;">Unix Time</label>
-                      <div data-toggle="tooltip" title="Optionally input timestamp for the value. If omitted, server will fill in the current time. NOTE: There cannot be two values with same time." data-placement="top">
-                        <div class='input-group date timestamp'>
-                          <input name="valuetime" type="text" class="form-control">
-                          <span class="input-group-addon">
-                            <span class="glyphicon glyphicon-time"></span>
-                          </span>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <button type="button" class="btn btn-info form-control btn-clone-above"><b>+</b></button>
-              </div>
-            </div>
-
-            <div class="panel panel-default">
-              <div class="panel-heading">
-                <h4 class="panel-title">
-                  <b>MetaData</b>
-                </h4>
-              </div>
-              <div class="panel-body">
-                <div class="well metadata-group form-group container-fluid" style="display:none;">
-                  <label class="control-label col-md-12">Name*
-                    <a data-toggle="tooltip" title="Optionally input some metadata. The name could be some descriptive title, e.g. 'Sensor manufacturer' or 'Max value'" data-placement="top">
-                      <input name="metadataname" type="text" class="form-control">
-                    </a>
-                  </label>
-                  <label class="control-label col-md-12">Value*
-                    <a data-toggle="tooltip" title="Enter a value for this metadata. This can be anything." data-placement="top">
-                      <input name="metadatavalue" type="text" class="form-control">
-                    </a>
-                  </label>
-                  <label class="control-label col-md-12">Type
-                    <select name="metadatatype" class="form-control"
-                      data-toggle="tooltip" title="Optionally select a type for metadata value. It will just be extra metadata." data-placement="top">
-                      <option value="">[no type]</option>
-                      <option>int</option>
-                      <option>byte</option>
-                      <option>short</option>
-                      <option>long</option>
-                      <option>float</option>
-                      <option>double</option>
-                      <option>integer</option>
-                      <option>nonPositiveInteger</option>
-                      <option>negativeInteger</option>
-                      <option>nonNegativeInteger</option>
-                      <option>positiveInteger</option>
-                      <option>unsignedLong</option>
-                      <option>unsignedInt</option>
-                      <option>unsignedShort</option>
-                      <option>unsignedByte</option>
-                      <option>decimal</option>
-                      <option>boolean</option>
-                      <option selected>string</option>
-                      <option>normalizedString</option>
-                      <option>token</option>
-                      <option>language</option>
-                      <option>Name</option>
-                      <option>NCName</option>
-                      <option>NMTOKEN</option>
-                      <option>NMTOKENS</option>
-                      <option>ID</option>
-                      <option>IDREF</option>
-                      <option>IDREFS</option>
-                      <option>ENTITY</option>
-                      <option>ENTITIES</option>
-                      <option>hexBinary</option>
-                      <option>base64Binary</option>
-                      <option>anyURI</option>
-                      <option>QName</option>
-                      <option>NOTATION</option>
-                      <option>duration</option>
-                      <option>dateTime</option>
-                      <option>time</option>
-                      <option>gYearMonth</option>
-                      <option>gYear</option>
-                      <option>gMonthDay</option>
-                      <option>gDay</option>
-                      <option>gMonth</option>
-                    </select>
-                  </label>
-                  <label class="control-label col-md-12">description
-                    <a data-toggle="tooltip" title="Optionally enter some extra description for this metadata." data-placement="top">
-                      <input name="metadatadescription" type="text" class="form-control">
-                    </a>
-                  </label>
-                </div>
-                <button type="button" class="btn btn-info form-control btn-clone-above"><b>+</b></button>
-              </div>
-            </div>
-          </form>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-default newInfoCancel" data-dismiss="modal">Cancel</button>
-          <button type="button" class="btn btn-primary newInfoSubmit">Add to request</button>
-        </div>
-      </div>
-    </div>
-  </div>
-
-
+<!-- Add new group form-->
 	<div class="modal fade" id="newGroupItem" data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="newGroupItemLabel">
     <div class="modal-dialog" role="document">
       <div class="modal-content">
@@ -603,7 +430,7 @@
             <small>* required</small>
             <div class="form-group">
               <label for="groupItemName" class="control-label ">Name*</label>
-              <a data-toggle="tooltip" title="Enter some name identifier for the InfoItem." data-placement="top">
+              <a data-toggle="tooltip" title="Enter group name" data-placement="top">
                 <input name="name" type="text" class="form-control" id="groupItemName">
               </a>
             </div>
@@ -627,5 +454,43 @@
       </div>
     </div>
   </div>
+
+
+<!-- Add new user form-->
+	<div class="modal fade" id="newUserItem" data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="newUserItemLabel">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close newInfoCancel" style="font-size:32px;line-height:0.8" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+          <h4 class="modal-title" id="newUserItemLabel">New User</h4>
+        </div>
+        <div class="modal-body">
+          <form>
+            <input type="hidden" name="parent" id="userItemParent">
+            <small>* required</small>
+            <div class="form-group">
+              <label for="userItemName" class="control-label ">Username*</label>
+              <a data-toggle="tooltip" title="Enter username" data-placement="top">
+                <input name="name" type="text" class="form-control" id="userItemName">
+              </a>
+            </div>
+
+						<div class="form-group">
+              <label for="userItemEmail" class="control-label ">E-mail*</label>
+              <a data-toggle="tooltip" title="Enter user e-mail" data-placement="top">
+                <input name="name" type="text" class="form-control" id="userItemEmail">
+              </a>
+            </div>
+
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default newUserItemCancel" data-dismiss="modal">Cancel</button>
+          <button type="button" class="btn btn-primary" id="newUserItemSubmit">Save</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
 </body>
 </html>

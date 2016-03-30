@@ -96,7 +96,7 @@ public class FacebookAuth {
         try {
 
             JsonObject newUserJSON = new JsonParser().parse(userData).getAsJsonObject();
-            OMIUser newUser = new OMIUser(OMIUser.OMIUserType.OAuth);
+            OMIUser newUser = new OMIUser();
             String userName = newUserJSON.getAsJsonPrimitive("name").getAsString();
             String userEmail = newUserJSON.getAsJsonPrimitive("email").getAsString();
             newUser.username = userName;
