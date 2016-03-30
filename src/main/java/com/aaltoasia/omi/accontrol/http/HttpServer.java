@@ -61,10 +61,10 @@ public class HttpServer implements Runnable
 
                 hasRights = AuthService.getInstance().isAdministrator(email);
 
-                if (hasRights)
-                    logger.info("User has rights to enter AC Console");
-                else
-                    logger.info("User does not have rights to enter AC Console");
+//                if (hasRights)
+//                    logger.info("User has rights to enter AC Console");
+//                else
+//                    logger.info("User does not have rights to enter AC Console");
 
             }
 
