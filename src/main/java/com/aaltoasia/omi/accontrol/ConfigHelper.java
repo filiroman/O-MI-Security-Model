@@ -8,6 +8,8 @@ public class ConfigHelper {
     public static final String dbName = "OMISec";
     public static final String hostAddress = "http://localhost:8080";
 
+    public static final String adminFileName = "admin_list.txt";
+
     /** USER_AGENT is used when retrieving objects from O-MI*/
     public static final String USER_AGENT = "Mozilla/5.0";
 }

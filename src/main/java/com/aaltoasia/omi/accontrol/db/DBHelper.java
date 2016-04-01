@@ -69,12 +69,10 @@ public class DBHelper {
         stmt.executeUpdate(sql);
         stmt.close();
 
-        createAdministrators();
-
         DEFAULT_GROUP_ID = createGroup("Default");
     }
 
-    public void createAdmin(String email) {
+    private void createAdmin(String email) {
 
         try (PreparedStatement stmt = connection.prepareStatement("INSERT INTO ADMINISTRATORS(EMAIL) VALUES(?)")){
             stmt.setString(1,email);
@@ -86,7 +84,7 @@ public class DBHelper {
 
         } catch (SQLException ex)
         {
-            logger.warn(ex.getMessage());
+            logger.error("Error:",ex);
         }
     }
 
@@ -102,22 +100,46 @@ public class DBHelper {
 
         } catch (SQLException ex)
         {
-            logger.warn(ex.getMessage());
+            logger.error("Error:",ex);
             return false;
         }
     }
 
-    public void createAdministrators()
+    private void removeOldAdministrators() {
+        try {
+            Statement stmt = connection.createStatement();
+            stmt.executeUpdate("DELETE FROM ADMINISTRATORS");
+            stmt.close();
+
+        } catch (SQLException ex)
+        {
+            logger.error("While deleting administrators: ",ex);
+        }
+    }
+
+    private void createAdministrators()
     {
-        try(BufferedReader br = new BufferedReader(new FileReader("admin_list.txt"))) {
+        removeOldAdministrators();
+
+        // Number of first lines in file that are used for comments
+        int commentLines = 1;
+        int i = 0;
+
+        try(BufferedReader br = new BufferedReader(new FileReader(ConfigHelper.adminFileName))) {
             String line = br.readLine();
 
             while (line != null) {
-                createAdmin(line);
+
+                if (i<commentLines) {
+                    i++;
+                } else {
+                    createAdmin(line);
+                }
+
                 line = br.readLine();
             }
         } catch (Exception ex) {
-            logger.warn(ex.getMessage());
+            logger.error("Error:",ex);
         }
     }
 
@@ -135,7 +157,7 @@ public class DBHelper {
 
         } catch (SQLException ex)
         {
-            logger.warn(ex.getMessage());
+            logger.error("Error:",ex);
             return -1;
         }
     }
@@ -153,7 +175,7 @@ public class DBHelper {
 
         } catch (SQLException ex)
         {
-            logger.warn(ex.getMessage());
+            logger.error("Error:",ex);
             return false;
         }
     }
@@ -179,7 +201,7 @@ public class DBHelper {
 
         } catch (SQLException ex)
         {
-            logger.warn(ex.getMessage());
+            logger.error("Error:",ex);
             return false;
         }
     }
@@ -219,7 +241,7 @@ public class DBHelper {
 
         } catch (SQLException ex)
         {
-            logger.warn(ex.getMessage());
+            logger.error("Error:",ex);
             return null;
         }
     }
@@ -261,7 +283,7 @@ public class DBHelper {
 
         } catch (SQLException ex)
         {
-            logger.warn(ex.getMessage());
+            logger.error("Error:",ex);
             return null;
         }
     }
@@ -280,7 +302,7 @@ public class DBHelper {
             return -1;
         } catch (SQLException ex)
         {
-            logger.warn(ex.getMessage());
+            logger.error("Error:",ex);
             return -1;
         }
     }
@@ -299,7 +321,7 @@ public class DBHelper {
 
         } catch (SQLException ex)
         {
-            logger.warn(ex.getMessage());
+            logger.error("Error:",ex);
             return false;
         }
     }
@@ -328,7 +350,7 @@ public class DBHelper {
 
         } catch (SQLException ex)
         {
-            logger.warn(ex.getMessage());
+            logger.error("Error:",ex);
             return false;
         }
     }
@@ -347,7 +369,7 @@ public class DBHelper {
 
         } catch (SQLException ex)
         {
-            logger.warn(ex.getMessage());
+            logger.error("Error:",ex);
             return false;
         }
     }
@@ -365,7 +387,7 @@ public class DBHelper {
 
         } catch (SQLException ex)
         {
-            logger.warn(ex.getMessage());
+            logger.error("Error:",ex);
             return false;
         }
     }
@@ -402,7 +424,7 @@ public class DBHelper {
 
 //        } catch (SQLException ex)
 //        {
-//            logger.warn(ex.getMessage());
+//            logger.error("Error:",ex);
 //            return false;
 //        }
     }
@@ -428,7 +450,7 @@ public class DBHelper {
 
         } catch (SQLException ex)
         {
-            logger.warn(ex.getMessage());
+            logger.error("Error:",ex);
             return false;
         }
     }
@@ -449,7 +471,7 @@ public class DBHelper {
 
         } catch (SQLException ex)
         {
-            logger.warn(ex.getMessage());
+            logger.error("Error:",ex);
             return false;
         }
     }
@@ -478,7 +500,7 @@ public class DBHelper {
 
         } catch (SQLException ex)
         {
-            logger.warn(ex.getMessage());
+            logger.error("Error:",ex);
             return null;
         }
     }
@@ -497,7 +519,7 @@ public class DBHelper {
 
         } catch (SQLException ex)
         {
-            logger.warn(ex.getMessage());
+            logger.error("Error:",ex);
             return false;
         }
     }
@@ -524,7 +546,7 @@ public class DBHelper {
 
         } catch (SQLException ex)
         {
-            logger.warn(ex.getMessage());
+            logger.error("Error:",ex);
             return null;
         }
     }
@@ -541,7 +563,7 @@ public class DBHelper {
 
         } catch (SQLException ex)
         {
-            logger.warn(ex.getMessage());
+            logger.error("Error:",ex);
             return false;
         }
 
@@ -568,7 +590,7 @@ public class DBHelper {
 
         } catch (SQLException ex)
         {
-            logger.warn(ex.getMessage());
+            logger.error("Error:",ex);
             return -1;
         }
     }
@@ -609,7 +631,7 @@ public class DBHelper {
 
         } catch (SQLException ex)
         {
-            logger.warn(ex.getMessage());
+            logger.error("Error:",ex);
             return false;
         }
     }
@@ -648,7 +670,7 @@ public class DBHelper {
             return rules;
 
         } catch (SQLException ex) {
-            logger.warn(ex.getMessage());
+            logger.error("Error:",ex);
             return null;
         }
     }
@@ -731,7 +753,7 @@ public class DBHelper {
 
         } catch (SQLException ex)
         {
-            logger.warn(ex.getMessage());
+            logger.error("Error:",ex);
             return false;
         }
     }
@@ -748,7 +770,7 @@ public class DBHelper {
             Class.forName("org.sqlite.JDBC");
             connection = DriverManager.getConnection(jdbcDriver);
         } catch ( Exception e ) {
-            logger.warn( e.getClass().getName() + ": " + e.getMessage() );
+            logger.error("While loading JDBC driver: ",e);
             return false;
         }
 
@@ -760,7 +782,7 @@ public class DBHelper {
                 createTables();
             } catch (SQLException ex)
             {
-                logger.info("Error while creating tables: "+ex.getMessage());
+                logger.error("Error while creating tables: ", ex);
                 return false;
             }
 
@@ -772,6 +794,8 @@ public class DBHelper {
             if (DEFAULT_GROUP_ID == -1)
                 DEFAULT_GROUP_ID = createGroup("Default");
         }
+
+        createAdministrators();
         return true;
     }
 

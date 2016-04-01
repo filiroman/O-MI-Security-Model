@@ -3,6 +3,7 @@ package com.aaltoasia.omi.accontrol.http;
 import com.aaltoasia.omi.accontrol.AuthService;
 import com.aaltoasia.omi.accontrol.PermissionService;
 import com.aaltoasia.omi.accontrol.AuthServlet;
+import com.aaltoasia.omi.accontrol.db.DBHelper;
 import org.eclipse.jetty.server.*;
 import org.eclipse.jetty.server.session.HashSessionIdManager;
 import org.eclipse.jetty.server.session.HashSessionManager;
@@ -151,6 +152,9 @@ public class HttpServer implements Runnable
 
         context.addFilter(LoginFilter.class, "/*",
                 EnumSet.of(DispatcherType.REQUEST));
+
+        // Initialize DB Singleton
+        DBHelper.getInstance();
 
         try
         {
