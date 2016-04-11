@@ -18,12 +18,11 @@ import org.slf4j.LoggerFactory;
  */
 public class FacebookAuth {
 
-    // TODO: Move apiSecret out of here
     private final String apiKey = "";
     private final String apiSecret = "";
     private final String apiCallback = "";
 
-    private final Logger logger = LoggerFactory.getLogger(this.getClass().getName());
+    private static final Logger logger = LoggerFactory.getLogger(FacebookAuth.class);
 
     // see https://developers.facebook.com/docs/facebook-login/permissions
     private final String fbScope = "email,public_profile";
@@ -42,7 +41,7 @@ public class FacebookAuth {
         try {
             return new FacebookAuth();
         } catch (Exception e) {
-            System.out.println(e.getMessage());
+            logger.error("When initializing FacebookAuth module ",e);
             System.exit(-1);
         }
         return null;

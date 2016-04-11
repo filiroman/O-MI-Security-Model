@@ -1,6 +1,7 @@
 package com.aaltoasia.omi.accontrol.http;
 
 import com.aaltoasia.omi.accontrol.AuthService;
+import com.aaltoasia.omi.accontrol.ConfigHelper;
 import com.aaltoasia.omi.accontrol.PermissionService;
 import com.aaltoasia.omi.accontrol.AuthServlet;
 import com.aaltoasia.omi.accontrol.db.DBHelper;
@@ -55,10 +56,29 @@ public class HttpServer implements Runnable
             boolean loginRequest = request.getRequestURI().equals(loginURI);
             boolean permissionRequest = request.getRequestURI().contains(permissionServiceURI);
 
+            String email = null;
+
+            if (!loggedIn) {
+
+                String certEmail = request.getHeader("X-SSL-CLIENT");
+                String certVerify = request.getHeader("X-SSL-VERIFY");
+
+                if (certEmail != null && certVerify != null) {
+
+                    if (certVerify.equalsIgnoreCase("SUCCESS"))
+                        email = certEmail.substring(certEmail.indexOf("emailAddress=") + "emailAddress=".length());
+
+                }
+
+                loggedIn = (email != null);
+
+            } else {
+                email = session.getAttribute("userID").toString();
+            }
+
             boolean hasRights = false;
 
             if (loggedIn) {
-                String email = session.getAttribute("userID").toString();
 
                 hasRights = AuthService.getInstance().isAdministrator(email);
 
@@ -128,10 +148,6 @@ public class HttpServer implements Runnable
         SessionHandler sessionHandler = new SessionHandler(sessionManager);
         context.setSessionHandler(sessionHandler);
 
-        // add a simple Servlet at "/dynamic/*"
-//        ServletHolder holderDynamic = new ServletHolder("dynamic", DynamicServlet.class);
-//        context.addServlet(holderDynamic, "/dynamic/*");
-
         ServletHolder holderHome = new ServletHolder("static-home", DefaultServlet.class);
         holderHome.setInitParameter("resourceBase",pwdPath);
         holderHome.setInitParameter("dirAllowed","false");
@@ -144,11 +160,6 @@ public class HttpServer implements Runnable
         ServletHolder testAuth = new ServletHolder(new AuthServlet());
         context.addServlet(testAuth, "/Login/*");
 
-        // Lastly, the default servlet for root content (always needed, to satisfy servlet spec)
-        // It is important that this is last.
-//        ServletHolder holderPwd = new ServletHolder("default", DefaultServlet.class);
-//        holderPwd.setInitParameter("dirAllowed","false");
-//        context.addServlet(holderPwd,"/");
 
         context.addFilter(LoginFilter.class, "/*",
                 EnumSet.of(DispatcherType.REQUEST));
@@ -169,7 +180,7 @@ public class HttpServer implements Runnable
 
     public static void main(String[] args) {
         //Start HTTP Server
-        (new Thread(new HttpServer(8088))).start();
+        (new Thread(new HttpServer(ConfigHelper.port))).start();
     }
 }
 

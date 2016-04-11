@@ -6,7 +6,7 @@ package com.aaltoasia.omi.accontrol;
 public class ConfigHelper {
 
     public static final String dbName = "OMISec";
-    public static final String hostAddress = "http://localhost:8080";
+    public static final int port = 8088;
 
     public static final String adminFileName = "admin_list.txt";
 
