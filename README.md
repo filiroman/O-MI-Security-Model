@@ -16,9 +16,11 @@ Installation
 - Put your Facebook App credentials inside `src/main/java/com/aaltoasia/omi/accontrol/FacebookAuth.java`
 - Put administrator emails into `admin_list.txt` (one row per e-mail)
 - Start `O-MI Node`
-- Execute `run.sh` to run the module
+- Execute `run.sh` to run the module. use -l option to specify logging level. Possible values: `error`, `warn`, `info`.
 
-Now use [http://localhost:8009/security/Login](http://localhost:8009/security/Login) for Login and Register new users, [http://localhost:8009/security/AC](http://localhost:8009/security/AC) for Access Control and [http://localhost:8009/html/webclient/index.html](http://localhost:8009/html/webclient/index.html) for standard O-MI Node Webclient.
+**Note!** To use client side certificates you need to generate CA, server and client side SSL certificates. [(Tutorial)](https://gist.github.com/mtigas/952344).
+
+Now use [http://localhost:8009/security/Login](https://localhost/security/Login) for Login and Register new users, [http://localhost:8009/security/AC](https://localhost/security/AC) for Access Control and [http://localhost:8009/html/webclient/index.html](https://localhost/html/webclient/index.html) for standard O-MI Node Webclient.
 
 
 Possible problems
