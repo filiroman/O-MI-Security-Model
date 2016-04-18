@@ -10,6 +10,7 @@ while getopts ":l:" opt; do
   case $opt in
     l)
       java -jar -Dloglevel=$OPTARG target/OMISec-1.0-SNAPSHOT-jar-with-dependencies.jar
+      exit 1
       ;;
     \?)
       echo "Invalid option: -$OPTARG" >&2
@@ -21,3 +22,4 @@ while getopts ":l:" opt; do
       ;;
   esac
 done
+java -jar  target/OMISec-1.0-SNAPSHOT-jar-with-dependencies.jar

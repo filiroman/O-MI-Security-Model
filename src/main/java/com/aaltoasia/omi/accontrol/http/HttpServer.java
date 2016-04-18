@@ -185,12 +185,16 @@ public class HttpServer implements Runnable
         ch.qos.logback.classic.Logger root = (ch.qos.logback.classic.Logger)LoggerFactory.getLogger(Logger.ROOT_LOGGER_NAME);
 
         String logLevel = System.getProperty("loglevel");
-        if (logLevel.equalsIgnoreCase("error"))
-            root.setLevel(Level.ERROR);
-        else if (logLevel.equalsIgnoreCase("warn"))
-            root.setLevel(Level.WARN);
-        else
+        if (logLevel != null) {
+            if (logLevel.equalsIgnoreCase("error"))
+                root.setLevel(Level.ERROR);
+            else if (logLevel.equalsIgnoreCase("warn"))
+                root.setLevel(Level.WARN);
+            else
+                root.setLevel(Level.INFO);
+        } else {
             root.setLevel(Level.INFO);
+        }
 
         //Start HTTP Server
         (new Thread(new HttpServer(ConfigHelper.port))).start();
