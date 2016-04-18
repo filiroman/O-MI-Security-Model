@@ -24,6 +24,8 @@ import java.util.EnumSet;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import ch.qos.logback.classic.Level;
+
 /**
  * Created by romanfilippov on 13/01/16.
  */
@@ -179,6 +181,17 @@ public class HttpServer implements Runnable
     }
 
     public static void main(String[] args) {
+
+        ch.qos.logback.classic.Logger root = (ch.qos.logback.classic.Logger)LoggerFactory.getLogger(Logger.ROOT_LOGGER_NAME);
+
+        String logLevel = System.getProperty("loglevel");
+        if (logLevel.equalsIgnoreCase("error"))
+            root.setLevel(Level.ERROR);
+        else if (logLevel.equalsIgnoreCase("warn"))
+            root.setLevel(Level.WARN);
+        else
+            root.setLevel(Level.INFO);
+
         //Start HTTP Server
         (new Thread(new HttpServer(ConfigHelper.port))).start();
     }
