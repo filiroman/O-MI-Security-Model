@@ -1,0 +1,8 @@
+Package: [[name]]
+Version: [[version]]
+Section: misc
+Priority: low
+Architecture: all
+Description: [[O-MI Security Module]]
+Maintainer: roman.filippov@aalto.fi
+Depends: default-jre | java7-runtime
