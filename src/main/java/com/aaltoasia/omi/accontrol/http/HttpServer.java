@@ -67,9 +67,13 @@ public class HttpServer implements Runnable
 
                 if (certEmail != null && certVerify != null) {
 
+                    logger.debug("Client certificate detected. Email="+certEmail+"/Verified="+certVerify);
+
                     if (certVerify.equalsIgnoreCase("SUCCESS"))
                         email = certEmail.substring(certEmail.indexOf("emailAddress=") + "emailAddress=".length());
 
+                } else {
+                    logger.debug("Client certificate is not found.");
                 }
 
                 loggedIn = (email != null);
@@ -190,10 +194,12 @@ public class HttpServer implements Runnable
                 root.setLevel(Level.ERROR);
             else if (logLevel.equalsIgnoreCase("warn"))
                 root.setLevel(Level.WARN);
-            else
+            else if (logLevel.equalsIgnoreCase("info"))
                 root.setLevel(Level.INFO);
+            else
+                root.setLevel(Level.DEBUG);
         } else {
-            root.setLevel(Level.INFO);
+            root.setLevel(Level.DEBUG);
         }
 
         //Start HTTP Server

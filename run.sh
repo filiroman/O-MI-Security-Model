@@ -2,9 +2,10 @@
 
 #Set log level
 #Possible values:
-#info (default)
+#info
 #warn
 #error
+#debug (default)
 
 while getopts ":l:" opt; do
   case $opt in
