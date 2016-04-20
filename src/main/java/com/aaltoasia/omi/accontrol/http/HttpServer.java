@@ -44,6 +44,22 @@ public class HttpServer implements Runnable
     }
 
     public static class LoginFilter implements Filter {
+
+        public static int nthIndexOf(String text, char needle, int n)
+        {
+            for (int i = 0; i < text.length(); i++)
+            {
+                if (text.charAt(i) == needle)
+                {
+                    n--;
+                    if (n == 0)
+                    {
+                        return i;
+                    }
+                }
+            }
+            return -1;
+        }
         @Override
         public void doFilter(ServletRequest req, ServletResponse res, FilterChain chain)
                 throws IOException, ServletException {
@@ -69,8 +85,15 @@ public class HttpServer implements Runnable
 
                     logger.debug("Client certificate detected. Email="+certEmail+"/Verified="+certVerify);
 
-                    if (certVerify.equalsIgnoreCase("SUCCESS"))
-                        email = certEmail.substring(certEmail.indexOf("emailAddress=") + "emailAddress=".length());
+                    if (certVerify.equalsIgnoreCase("SUCCESS")) {
+                        int firstIndex = certEmail.indexOf("emailAddress=") + "emailAddress=".length();
+                        int lastIndex = nthIndexOf(certEmail,'/',2);
+
+                        if (lastIndex < firstIndex) 
+                            email = certEmail.substring(firstIndex);
+                        else
+                            email = certEmail.substring(firstIndex, lastIndex);
+                    }
 
                 } else {
                     logger.debug("Client certificate is not found.");
