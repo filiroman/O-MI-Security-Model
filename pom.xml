@@ -70,31 +70,60 @@
                     </archive>
                 </configuration>
             </plugin>
-            <plugin>
-                <artifactId>jdeb</artifactId>
-                <groupId>org.vafer</groupId>
-                <version>1.5</version>
-                <executions>
-                    <execution>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>jdeb</goal>
-                        </goals>
-                        <configuration>
-                            <dataSet>
-                                <data>
-                                    <src>${project.build.directory}/${project.build.finalName}.jar</src>
-                                    <type>file</type>
-                                    <mapper>
-                                        <type>perm</type>
-                                        <prefix>/usr/share/jdeb/lib</prefix>
-                                    </mapper>
-                                </data>
-                            </dataSet>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
+            <!--<plugin>-->
+                <!--<artifactId>jdeb</artifactId>-->
+                <!--<groupId>org.vafer</groupId>-->
+                <!--<version>1.5</version>-->
+                <!--<executions>-->
+                    <!--<execution>-->
+                        <!--<phase>package</phase>-->
+                        <!--<goals>-->
+                            <!--<goal>jdeb</goal>-->
+                        <!--</goals>-->
+                        <!--<configuration>-->
+                            <!--<dataSet>-->
+                                <!--<data>-->
+                                    <!--<src>${project.build.directory}/${project.build.finalName}.jar</src>-->
+                                    <!--<type>file</type>-->
+                                    <!--<mapper>-->
+                                        <!--<type>perm</type>-->
+                                        <!--<prefix>/usr/share/jdeb/lib</prefix>-->
+                                    <!--</mapper>-->
+                                <!--</data>-->
+                            <!--</dataSet>-->
+                        <!--</configuration>-->
+                    <!--</execution>-->
+                <!--</executions>-->
+            <!--</plugin>-->
         </plugins>
+        <!--<extensions>-->
+            <!--&lt;!&ndash; Add support for the "deb" packaging &ndash;&gt;-->
+            <!--<extension>-->
+                <!--<groupId>org.vafer</groupId>-->
+                <!--<artifactId>jdeb</artifactId>-->
+                <!--<version>1.5</version>-->
+            <!--</extension>-->
+        <!--</extensions>-->
+        <!--<pluginManagement>-->
+            <!--<plugins>-->
+                <!--<plugin>-->
+                    <!--<artifactId>jdeb</artifactId>-->
+                    <!--<groupId>org.vafer</groupId>-->
+                    <!--&lt;!&ndash; Customize deb package &ndash;&gt;-->
+                    <!--<configuration>-->
+                        <!--<dataSet>-->
+                            <!--<data>-->
+                                <!--<src>${project.build.directory}/preparedfiles</src>-->
+                                <!--<type>directory</type>-->
+                                <!--<mapper>-->
+                                    <!--<type>perm</type>-->
+                                    <!--<prefix>/usr/lib/xwiki/myproject</prefix>-->
+                                <!--</mapper>-->
+                            <!--</data>-->
+                        <!--</dataSet>-->
+                    <!--</configuration>-->
+                <!--</plugin>-->
+            <!--</plugins>-->
+        <!--</pluginManagement>-->
     </build>
 </project>
