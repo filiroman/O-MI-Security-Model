@@ -1,9 +1,6 @@
 package com.aaltoasia.omi.accontrol.http;
 
-import com.aaltoasia.omi.accontrol.AuthService;
-import com.aaltoasia.omi.accontrol.ConfigHelper;
-import com.aaltoasia.omi.accontrol.PermissionService;
-import com.aaltoasia.omi.accontrol.AuthServlet;
+import com.aaltoasia.omi.accontrol.*;
 import com.aaltoasia.omi.accontrol.db.DBHelper;
 import org.eclipse.jetty.server.*;
 import org.eclipse.jetty.server.session.HashSessionIdManager;
@@ -60,6 +57,18 @@ public class HttpServer implements Runnable
             }
             return -1;
         }
+
+        private final String[] allowedExtensions = new String[]{".css", ".js", ".png", ".jpg", ".ttf", ".woff", ".woff2"};
+
+        private boolean isResourceExtension (String URIpath)
+        {
+            for (String extension: allowedExtensions) {
+                if (URIpath.endsWith(extension))
+                    return true;
+            }
+            return false;
+        }
+
         @Override
         public void doFilter(ServletRequest req, ServletResponse res, FilterChain chain)
                 throws IOException, ServletException {
@@ -68,11 +77,17 @@ public class HttpServer implements Runnable
             HttpServletResponse response = (HttpServletResponse) res;
             HttpSession session = request.getSession(false);
             String loginURI = request.getContextPath() + "/Login";
+            String loginServlet = request.getContextPath() + "/AC/auth.html";
             String permissionServiceURI = request.getContextPath() + "/PermissionService";
 
+            String requestURI = request.getRequestURI();
+
             boolean loggedIn = (session != null) && (session.getAttribute("userID") != null);
-            boolean loginRequest = request.getRequestURI().equals(loginURI);
-            boolean permissionRequest = request.getRequestURI().contains(permissionServiceURI);
+            boolean loginRequest = requestURI.equals(loginURI);
+            boolean permissionRequest = requestURI.contains(permissionServiceURI);
+            boolean loginServletRequest = requestURI.equals(loginServlet);
+            boolean pathContainsAC = requestURI.contains("/AC/");
+            boolean resourceRequest = isResourceExtension(requestURI);
 
             String email = null;
 
@@ -118,7 +133,7 @@ public class HttpServer implements Runnable
 
             }
 
-            if (hasRights || loginRequest || permissionRequest) {
+            if (hasRights || loginRequest || permissionRequest || loginServletRequest || (pathContainsAC && resourceRequest)) {
 //                if (loggedIn)
 //                    logger.info("Attribute:"+ session.getAttribute("userID"));
 
@@ -185,6 +200,9 @@ public class HttpServer implements Runnable
 
         ServletHolder permissionService = new ServletHolder(new PermissionService());
         context.addServlet(permissionService, "/PermissionService/*");
+
+        ServletHolder regService = new ServletHolder(new RegService());
+        context.addServlet(regService, "/RegService/*");
 
         ServletHolder testAuth = new ServletHolder(new AuthServlet());
         context.addServlet(testAuth, "/Login/*");

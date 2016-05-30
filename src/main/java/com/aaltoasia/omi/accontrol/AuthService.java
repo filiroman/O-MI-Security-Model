@@ -77,4 +77,17 @@ public class AuthService {
         return DBHelper.getInstance().checkAdminPermissions(email);
     }
 
+    public boolean checkUserCredentials (String username, String password) {
+        OMIUser user = new OMIUser();
+        user.username = username;
+        user.password = password;
+
+        return DBHelper.getInstance().checkUserCredentials(user);
+    }
+
+    public boolean registerUser (String username, String email, String password) {
+
+        return true;
+    }
+
 }

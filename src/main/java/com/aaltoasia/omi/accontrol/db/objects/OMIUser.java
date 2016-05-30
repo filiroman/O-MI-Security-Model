@@ -21,6 +21,7 @@ public class OMIUser {
     public int id;
     public String username;
     public String email;
+    public String password;
 
 //    public OMIUser(OMIUserType userType)
 //    {

@@ -61,21 +61,25 @@ public class AuthServlet extends HttpServlet {
                     "</body></html>");
         } else if (auth_type == null) {
 
-            out.println(docType +
-                            "<html>\n" +
-                            "<head><title>" + title + "</title></head>\n" +
-                            "<body>\n" +
-                            "<h1 align=\"center\">" + title + "</h1>\n" +
-                            "<div align=\"center\">" +
-                            "<form>" +
-                            "<input type=\"hidden\" name=\"auth_type\" value=\"facebook\"/>" +
-                            "<input type=\"submit\" value=\"Facebook\"/>" +
-                            "</form>" +
-                            "<form>" +
-                            "<input type=\"hidden\" name=\"auth_type\" value=\"shibboleth\"/>" +
-                            "<input type=\"button\" value=\"Shibboleth\" onclick=\"alert('Shibboleth is not supported yet!');\"/>" +
-                            "</form></div>" +
-                            "</body></html>");
+//            RequestDispatcher view = request.getRequestDispatcher("/AC/auth.html");
+//            view.forward(request, response);
+            response.sendRedirect(request.getContextPath()+ "/AC/auth.html");
+
+//            out.println(docType +
+//                            "<html>\n" +
+//                            "<head><title>" + title + "</title></head>\n" +
+//                            "<body>\n" +
+//                            "<h1 align=\"center\">" + title + "</h1>\n" +
+//                            "<div align=\"center\">" +
+//                            "<form>" +
+//                            "<input type=\"hidden\" name=\"auth_type\" value=\"facebook\"/>" +
+//                            "<input type=\"submit\" value=\"Facebook\"/>" +
+//                            "</form>" +
+//                            "<form>" +
+//                            "<input type=\"hidden\" name=\"auth_type\" value=\"shibboleth\"/>" +
+//                            "<input type=\"button\" value=\"Shibboleth\" onclick=\"alert('Shibboleth is not supported yet!');\"/>" +
+//                            "</form></div>" +
+//                            "</body></html>");
         } else {
             if (auth_type.equalsIgnoreCase("facebook")) {
                 String authURL = auth.getAuthorizationURL();

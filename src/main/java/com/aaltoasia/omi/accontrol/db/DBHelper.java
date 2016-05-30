@@ -41,6 +41,7 @@ public class DBHelper {
         String sql = "CREATE TABLE USERS " +
                 "(ID INTEGER PRIMARY KEY     NOT NULL," +
                 " USERNAME       VARCHAR(256)    NOT NULL,"+
+                " PASSWORD       VARCHAR(256)    NOT NULL,"+
                 " EMAIL       VARCHAR(256)    UNIQUE NOT NULL)";
         stmt.executeUpdate(sql);
 
@@ -70,6 +71,29 @@ public class DBHelper {
         stmt.close();
 
         DEFAULT_GROUP_ID = createGroup("Default");
+    }
+
+    public boolean checkUserCredentials (OMIUser user) {
+
+        try {
+            PreparedStatement stmt = connection.prepareStatement("SELECT * FROM USERS WHERE USERNAME=? OR EMAIL=?");
+            stmt.setString(1, user.username);
+            stmt.setString(2, user.username);
+            ResultSet rs = stmt.executeQuery();
+            boolean res = rs.next();
+            if (res) {
+                String db_pass = rs.getString("PASSWORD");
+                return (user.password.equals(db_pass));
+            } else {
+                stmt.close();
+                return false;
+            }
+
+        } catch (SQLException ex)
+        {
+            logger.error("Error:",ex);
+            return false;
+        }
     }
 
     private void createAdmin(String email) {
