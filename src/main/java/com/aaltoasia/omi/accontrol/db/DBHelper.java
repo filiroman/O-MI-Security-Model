@@ -8,6 +8,8 @@ import com.aaltoasia.omi.accontrol.db.objects.OMIUser;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.sql.*;
 import java.util.ArrayList;
 import org.slf4j.Logger;
@@ -20,6 +22,7 @@ import org.slf4j.LoggerFactory;
 public class DBHelper {
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass().getName());
+    private final String pass_salt = "INSERT_SALT_PHRASE_HERE";
 
     private static final DBHelper instance = new DBHelper();
     private DBHelper() {
@@ -83,7 +86,8 @@ public class DBHelper {
             boolean res = rs.next();
             if (res) {
                 String db_pass = rs.getString("PASSWORD");
-                return (user.password.equals(db_pass));
+                String entered_pass = get_SHA_256_SecurePassword(user.password, pass_salt.getBytes());
+                return (entered_pass.equals(db_pass));
             } else {
                 stmt.close();
                 return false;
@@ -619,20 +623,33 @@ public class DBHelper {
         }
     }
 
-    public boolean createUserIfNotExists(OMIUser user)
+    public boolean  createUserIfNotExists(OMIUser user)
     {
         try {
 
-            PreparedStatement stmt = connection.prepareStatement("SELECT * FROM USERS WHERE USERNAME=? AND EMAIL=?");
-            stmt.setString(1,user.username);
-            stmt.setString(2,user.email);
+            PreparedStatement stmt = connection.prepareStatement("SELECT * FROM USERS WHERE EMAIL=?");
+            stmt.setString(1,user.email);
             ResultSet rs = stmt.executeQuery();
 
             // No such users, insert one
             if (!rs.isBeforeFirst()) {
-                stmt = connection.prepareStatement("INSERT INTO USERS(USERNAME,EMAIL) VALUES(?,?)");
+
+                String statement = null;
+
+                if (user.password != null)
+                    statement = "INSERT INTO USERS(USERNAME,EMAIL,PASSWORD) VALUES(?,?,?)";
+                else
+                    statement = "INSERT INTO USERS(USERNAME,EMAIL) VALUES(?,?)";
+
+                stmt = connection.prepareStatement(statement);
                 stmt.setString(1,user.username);
                 stmt.setString(2,user.email);
+
+                if (user.password != null) {
+                    String pass_hash = get_SHA_256_SecurePassword(user.password, pass_salt.getBytes());
+                    stmt.setString(3, pass_hash);
+                }
+
                 boolean res = (stmt.executeUpdate() != 0);
 
                 if (!res)
@@ -782,7 +799,28 @@ public class DBHelper {
         }
     }
 
-    public boolean configureDB()
+    private String get_SHA_256_SecurePassword(String passwordToHash, byte[] salt)
+    {
+        String generatedPassword = null;
+        try {
+            MessageDigest md = MessageDigest.getInstance("SHA-256");
+            md.update(salt);
+            byte[] bytes = md.digest(passwordToHash.getBytes());
+            StringBuilder sb = new StringBuilder();
+            for(int i=0; i< bytes.length ;i++)
+            {
+                sb.append(Integer.toString((bytes[i] & 0xff) + 0x100, 16).substring(1));
+            }
+            generatedPassword = sb.toString();
+        }
+        catch (NoSuchAlgorithmException e)
+        {
+            logger.error("Error:",e);
+        }
+        return generatedPassword;
+    }
+
+    private boolean configureDB()
     {
         String dbName = ConfigHelper.dbName + ".db";
         String jdbcDriver = "jdbc:sqlite:"+ dbName;

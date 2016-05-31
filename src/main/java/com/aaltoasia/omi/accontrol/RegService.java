@@ -39,28 +39,34 @@ public class RegService extends HttpServlet {
                           HttpServletResponse response)
             throws ServletException, IOException {
 
-        response.setContentType("application/json");
-        response.setCharacterEncoding("UTF-8");
+//        response.setContentType("application/json");
+//        response.setCharacterEncoding("UTF-8");
 
         String regUser = request.getParameter("regUser");
         String authUser = request.getParameter("authUser");
 
-        String body = getRequestBody(request);
+        //String body = getRequestBody(request);
 
         if (regUser != null) {
 
+            String userName = request.getParameter("username");
+            String userEmail = request.getParameter("email");
+            String userPass = request.getParameter("passwd");
 
-            JsonObject userDetails = new JsonParser().parse(body).getAsJsonObject();
-            String userName = userDetails.getAsJsonPrimitive("username").getAsString();
-            String userEmail = userDetails.getAsJsonPrimitive("email").getAsString();
-            String userPass = userDetails.getAsJsonPrimitive("password").getAsString();
+            boolean registered = AuthService.getInstance().registerUser(userName, userEmail, userPass);
+            if (registered) {
+                // set session
+                HttpSession session = request.getSession(true);
+                session.setAttribute("userID", userName);
+                response.sendRedirect("../");
+            }
 
         } else if (authUser != null) {
 
 
-            JsonObject userDetails = new JsonParser().parse(body).getAsJsonObject();
-            String userName = userDetails.getAsJsonPrimitive("username").getAsString();
-            String userPass = userDetails.getAsJsonPrimitive("password").getAsString();
+            //JsonObject userDetails = new JsonParser().parse(body).getAsJsonObject();
+            String userName = request.getParameter("username");
+            String userPass = request.getParameter("passwd");
 
             boolean authenticated = AuthService.getInstance().checkUserCredentials(userName, userPass);
 
@@ -69,6 +75,7 @@ public class RegService extends HttpServlet {
                 // set session
                 HttpSession session = request.getSession(true);
                 session.setAttribute("userID", userName);
+                response.sendRedirect("../");
             }
         }
 

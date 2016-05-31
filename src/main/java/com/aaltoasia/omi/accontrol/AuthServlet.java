@@ -57,7 +57,7 @@ public class AuthServlet extends HttpServlet {
                     "<div align=\"center\">" +
                      userInfo +
                     "</div>" +
-                    (authenticated ? "<h1 align=\"center\">User authenticated<br/><a href=\"AC/\">Go to AC Console</a></h1>" : "") +
+                    (authenticated ? "<h1 align=\"center\">User authenticated<br/><a href=\"../\">Go to O-MI Node</a></h1>" : "") +
                     "</body></html>");
         } else if (auth_type == null) {
 

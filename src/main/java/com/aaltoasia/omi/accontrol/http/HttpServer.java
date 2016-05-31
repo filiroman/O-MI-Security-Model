@@ -79,6 +79,7 @@ public class HttpServer implements Runnable
             String loginURI = request.getContextPath() + "/Login";
             String loginServlet = request.getContextPath() + "/AC/auth.html";
             String permissionServiceURI = request.getContextPath() + "/PermissionService";
+            String registrationServiceURI = request.getContextPath() + "/RegService";
 
             String requestURI = request.getRequestURI();
 
@@ -88,6 +89,7 @@ public class HttpServer implements Runnable
             boolean loginServletRequest = requestURI.equals(loginServlet);
             boolean pathContainsAC = requestURI.contains("/AC/");
             boolean resourceRequest = isResourceExtension(requestURI);
+            boolean registrationRequest = requestURI.contains(registrationServiceURI);
 
             String email = null;
 
@@ -133,7 +135,14 @@ public class HttpServer implements Runnable
 
             }
 
-            if (hasRights || loginRequest || permissionRequest || loginServletRequest || (pathContainsAC && resourceRequest)) {
+            boolean allowedRequests = hasRights ||
+                                      loginRequest ||
+                                      permissionRequest ||
+                                      loginServletRequest ||
+                                      (pathContainsAC && resourceRequest) ||
+                                      registrationRequest;
+
+            if (allowedRequests) {
 //                if (loggedIn)
 //                    logger.info("Attribute:"+ session.getAttribute("userID"));
 

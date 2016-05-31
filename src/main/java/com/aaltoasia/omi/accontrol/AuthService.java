@@ -87,7 +87,12 @@ public class AuthService {
 
     public boolean registerUser (String username, String email, String password) {
 
-        return true;
+        OMIUser user = new OMIUser();
+        user.username = username;
+        user.password = password;
+        user.email = email;
+
+        return DBHelper.getInstance().createUserIfNotExists(user);
     }
 
 }
