@@ -53,30 +53,38 @@ public class PermissionService extends HttpServlet {
         String readGroups = request.getParameter("readGroups");
         String removeGroups = request.getParameter("removeGroups");
         String readRules = request.getParameter("readRules");
-        if (readUsers != null) {
+        String getUserInfo = request.getParameter("getUserInfo");
 
-            PrintWriter out = response.getWriter();
+        PrintWriter out = response.getWriter();
+
+        if (getUserInfo != null) {
+
+            HttpSession session = request.getSession(false);
+            if (session != null) {
+                String userEmail = (String)session.getAttribute("userID");
+                OMIUser user = DBHelper.getInstance().getUser(userEmail);
+                Gson gson = new Gson();
+                out.println(gson.toJson(user));
+            }
+
+        } else if (readUsers != null) {
 
             ArrayList<OMIUser> users = DBHelper.getInstance().getUsers();
             out.println(wrapJson(users, "users"));
 
         } else if (readGroups != null) {
 
-            PrintWriter out = response.getWriter();
-
             ArrayList<OMIGroup> groups = DBHelper.getInstance().getGroups();
             out.println(wrapJson(groups, "groups"));
         } else if (readRules != null) {
 
             int groupID = Integer.parseInt(request.getParameter("groupID"));
-            PrintWriter out = response.getWriter();
             ArrayList<OMIRule> rules = DBHelper.getInstance().getRules(groupID);
 
             out.println(wrapJson(rules, "rules"));
         } else if (removeGroups != null) {
 
             int groupID = Integer.parseInt(request.getParameter("groupID"));
-            PrintWriter out = response.getWriter();
             if (DBHelper.getInstance().deleteGroup(groupID))
                 out.write("{\"result\":\"ok\"}");
             else

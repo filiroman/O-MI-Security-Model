@@ -57,8 +57,8 @@ public class RegService extends HttpServlet {
             if (registered) {
                 // set session
                 HttpSession session = request.getSession(true);
-                session.setAttribute("userID", userName);
-                response.sendRedirect("../");
+                session.setAttribute("userID", userEmail);
+                response.sendRedirect("/");
             }
 
         } else if (authUser != null) {
@@ -75,7 +75,7 @@ public class RegService extends HttpServlet {
                 // set session
                 HttpSession session = request.getSession(true);
                 session.setAttribute("userID", userName);
-                response.sendRedirect("../");
+                response.sendRedirect("/");
             }
         }
 

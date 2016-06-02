@@ -44,9 +44,9 @@ public class DBHelper {
         String sql = "CREATE TABLE USERS " +
                 "(ID INTEGER PRIMARY KEY     NOT NULL," +
                 " USERNAME       VARCHAR(256)    NOT NULL,"+
-                " PASSWORD       VARCHAR(256)    NOT NULL,"+
+                " PASSWORD       VARCHAR(256)    ,"+
                 " EMAIL       VARCHAR(256)    UNIQUE NOT NULL)";
-        stmt.executeUpdate(sql);
+        stmt.executeUpdate(sql);    
 
         sql = "CREATE TABLE RULES " +
                 "(ID INTEGER PRIMARY KEY     NOT NULL," +
@@ -552,6 +552,32 @@ public class DBHelper {
         }
     }
 
+    public OMIUser getUser (String userID)
+    {
+        try {
+            PreparedStatement stmt = connection.prepareStatement("SELECT * FROM USERS WHERE EMAIL=? OR USERNAME=?");
+            stmt.setString(1,userID);
+            stmt.setString(2,userID);
+            ResultSet rs = stmt.executeQuery();
+            OMIUser nextUser = new OMIUser();
+            if ( rs.next() ) {
+                nextUser.id = rs.getInt("ID");
+                nextUser.username = rs.getString("USERNAME");
+                nextUser.email = rs.getString("EMAIL");
+
+            }
+            rs.close();
+            stmt.close();
+
+            return nextUser;
+
+        } catch (SQLException ex)
+        {
+            logger.error("Error:",ex);
+            return null;
+        }
+    }
+
     public ArrayList<OMIUser> getUsers ()
     {
         try {
@@ -600,9 +626,22 @@ public class DBHelper {
     public int createUser(OMIUser user)
     {
         try {
-            PreparedStatement stmt = connection.prepareStatement("INSERT INTO USERS(USERNAME,EMAIL) VALUES(?,?)");
+            String statement = null;
+
+            if (user.password != null)
+                statement = "INSERT INTO USERS(USERNAME,EMAIL,PASSWORD) VALUES(?,?,?)";
+            else
+                statement = "INSERT INTO USERS(USERNAME,EMAIL) VALUES(?,?)";
+
+            PreparedStatement stmt = connection.prepareStatement(statement);
             stmt.setString(1,user.username);
             stmt.setString(2,user.email);
+
+            if (user.password != null) {
+                String pass_hash = get_SHA_256_SecurePassword(user.password, pass_salt.getBytes());
+                stmt.setString(3, pass_hash);
+            }
+
             stmt.executeUpdate();
 
             int res = stmt.getGeneratedKeys().getInt(1);
@@ -627,8 +666,9 @@ public class DBHelper {
     {
         try {
 
-            PreparedStatement stmt = connection.prepareStatement("SELECT * FROM USERS WHERE EMAIL=?");
+            PreparedStatement stmt = connection.prepareStatement("SELECT * FROM USERS WHERE EMAIL=? OR USERNAME=?");
             stmt.setString(1,user.email);
+            stmt.setString(2,user.username);
             ResultSet rs = stmt.executeQuery();
 
             // No such users, insert one
