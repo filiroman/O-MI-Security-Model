@@ -2,6 +2,7 @@ package com.aaltoasia.omi.accontrol;
 
 import com.aaltoasia.omi.accontrol.db.DBHelper;
 import com.aaltoasia.omi.accontrol.db.objects.OMIUser;
+import com.aaltoasia.omi.accontrol.http.HttpServer;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import org.scribe.builder.ServiceBuilder;
@@ -42,7 +43,7 @@ public class FacebookAuth {
             return new FacebookAuth();
         } catch (Exception e) {
             logger.error("When initializing FacebookAuth module ",e);
-            System.exit(-1);
+
         }
         return null;
     }
@@ -54,7 +55,7 @@ public class FacebookAuth {
         this.accessToken = null;
 
 
-        if (apiKey=="" || apiSecret=="" || apiCallback=="")
+        if (apiKey.equals("") || apiSecret.equals("") || apiCallback.equals(""))
         {
             throw new Exception("No facebook app credentials found. Please put it  inside `src/main/java/com/aaltoasia/omi/accontrol/FacebookAuth.java`");
         }

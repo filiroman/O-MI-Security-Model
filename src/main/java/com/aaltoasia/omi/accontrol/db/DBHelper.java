@@ -21,17 +21,28 @@ import org.slf4j.LoggerFactory;
  */
 public class DBHelper {
 
-    private final Logger logger = LoggerFactory.getLogger(this.getClass().getName());
+    private int DEFAULT_GROUP_ID;
+    private Connection connection;
+
+    private static final Logger logger = LoggerFactory.getLogger(DBHelper.class.getName());
     private final String pass_salt = "INSERT_SALT_PHRASE_HERE";
 
-    private static final DBHelper instance = new DBHelper();
+    private static final DBHelper instance = createInstance();
     private DBHelper() {
 //        logger.setLevel(Level.INFO);
         configureDB();
     }
 
-    private int DEFAULT_GROUP_ID;
-    private Connection connection;
+    private static DBHelper createInstance()
+    {
+        try {
+            return new DBHelper();
+        } catch (Exception e) {
+            logger.error("When initializing DBHelper module ",e);
+
+        }
+        return null;
+    }
 
     public static DBHelper getInstance() {
 
@@ -46,7 +57,7 @@ public class DBHelper {
                 " USERNAME       VARCHAR(256)    NOT NULL,"+
                 " PASSWORD       VARCHAR(256)    ,"+
                 " EMAIL       VARCHAR(256)    UNIQUE NOT NULL)";
-        stmt.executeUpdate(sql);    
+        stmt.executeUpdate(sql);
 
         sql = "CREATE TABLE RULES " +
                 "(ID INTEGER PRIMARY KEY     NOT NULL," +
@@ -815,7 +826,7 @@ public class DBHelper {
                     while (rs.next()) {
                         db_write = rs.getInt(1) == 1;
 
-                        if (db_write == true)
+                        if (db_write)
                             break;
                     }
 

@@ -6,6 +6,8 @@ import com.aaltoasia.omi.accontrol.db.objects.OMIObject;
 import com.aaltoasia.omi.accontrol.db.objects.OMIUser;
 
 import java.util.ArrayList;
+
+import com.aaltoasia.omi.accontrol.http.HttpServer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -25,7 +27,7 @@ public class AuthService {
         {
             logger.error("Can not initiate DB. Exiting...");
 
-            System.exit(0);
+            HttpServer.getInstance().stop();
         }
     }
 

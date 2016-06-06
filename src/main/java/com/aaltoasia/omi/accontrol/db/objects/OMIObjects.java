@@ -13,6 +13,8 @@ import java.util.ArrayList;
 @XmlAccessorType(XmlAccessType.FIELD)
 public class OMIObjects {
 
+    public String xPath;
+
     @XmlElement(name="Object", namespace = "odf.xsd")
     private ArrayList<OMIObject> objects = new ArrayList<OMIObject>();
 
@@ -23,7 +25,5 @@ public class OMIObjects {
     public void setObjects(ArrayList<OMIObject> subObjects) {
         this.objects = subObjects;
     }
-
-    public String xPath;
 
 }

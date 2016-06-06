@@ -11,10 +11,10 @@ import java.util.ArrayList;
 @XmlAccessorType(XmlAccessType.FIELD)
 public class OMIObject {
 
+    public String xPath;
+
     @XmlElement(name="id",namespace = "odf.xsd")
     private String id;
-
-    public String xPath;
 
     @XmlElement(name="Object",namespace = "odf.xsd")
     private ArrayList<OMIObject> subObjects = new ArrayList<OMIObject>();

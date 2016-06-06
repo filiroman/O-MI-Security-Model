@@ -10,6 +10,8 @@ import javax.xml.bind.annotation.XmlAttribute;
 @XmlAccessorType(XmlAccessType.FIELD)
 public class OMIInfoItem {
 
+    public String xPath;
+
     @XmlAttribute
     private String name;
 
@@ -20,6 +22,4 @@ public class OMIInfoItem {
     public void setName(String name) {
         this.name = name;
     }
-
-    public String xPath;
 }

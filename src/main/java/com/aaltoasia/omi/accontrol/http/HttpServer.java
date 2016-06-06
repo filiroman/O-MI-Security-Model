@@ -28,12 +28,19 @@ import ch.qos.logback.classic.Level;
  */
 public class HttpServer implements Runnable
 {
-    int port;
+    private int port;
 
     private static final Logger logger = LoggerFactory.getLogger(HttpServer.class);
 
-    public HttpServer(int port){
+    private Server server;
+
+    private static final HttpServer instance = new HttpServer(ConfigHelper.port);
+    private HttpServer(int port){
         this.port = port;
+    }
+    public static HttpServer getInstance() {
+
+        return instance;
     }
 
     public void run() {
@@ -42,8 +49,9 @@ public class HttpServer implements Runnable
 
     public static class LoginFilter implements Filter {
 
-        public static int nthIndexOf(String text, char needle, int n)
+        public static int nthIndexOf(String text, char needle, int number)
         {
+            int n = number;
             for (int i = 0; i < text.length(); i++)
             {
                 if (text.charAt(i) == needle)
@@ -164,14 +172,14 @@ public class HttpServer implements Runnable
     private void start()
     {
         //Server Setup
-        Server server = new Server();
+        server = new Server();
 //        server.dumpStdErr();
 
         // Create HTTP Config
         HttpConfiguration httpConfig = new HttpConfiguration();
 
         // Add support for X-Forwarded headers
-        httpConfig.addCustomizer( new org.eclipse.jetty.server.ForwardedRequestCustomizer() );
+        httpConfig.addCustomizer( new ForwardedRequestCustomizer() );
 
         // Create the http connector
         HttpConnectionFactory connectionFactory = new HttpConnectionFactory( httpConfig );
@@ -183,7 +191,7 @@ public class HttpServer implements Runnable
 //        server.addConnector(connector);
 
         // The filesystem paths we will map
-        String homePath = System.getProperty("user.home");
+//        String homePath = System.getProperty("user.home");
         String pwdPath = System.getProperty("user.dir") + File.separator + "webclient";
 
         // Setup the basic application "context" for this application at "/"
@@ -221,7 +229,13 @@ public class HttpServer implements Runnable
                 EnumSet.of(DispatcherType.REQUEST));
 
         // Initialize DB Singleton
-        DBHelper.getInstance();
+        if (DBHelper.getInstance() == null)
+            return;
+
+        if (FacebookAuth.getInstance() == null)
+            return;
+
+        server.setStopAtShutdown(true);
 
         try
         {
@@ -231,6 +245,14 @@ public class HttpServer implements Runnable
         catch (Throwable t)
         {
             logger.warn(t.getMessage());
+        }
+    }
+
+    public void stop() {
+        try {
+            server.stop();
+        } catch (Exception e) {
+           logger.error("Error while stopping Jetty:",e);
         }
     }
 
@@ -253,7 +275,7 @@ public class HttpServer implements Runnable
         }
 
         //Start HTTP Server
-        (new Thread(new HttpServer(ConfigHelper.port))).start();
+        (new Thread(HttpServer.getInstance())).start();
     }
 }
 
