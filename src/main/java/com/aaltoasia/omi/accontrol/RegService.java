@@ -1,5 +1,7 @@
 package com.aaltoasia.omi.accontrol;
 
+import com.aaltoasia.omi.accontrol.db.objects.OMIUser;
+import com.aaltoasia.omi.accontrol.openid.OpenIDAuth;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import org.slf4j.Logger;
@@ -33,6 +35,48 @@ public class RegService extends HttpServlet {
         }
 
         return jb.toString();
+    }
+
+    protected void doGet(HttpServletRequest request,
+                         HttpServletResponse response)
+            throws ServletException, IOException {
+
+        response.setContentType("application/json");
+        response.setCharacterEncoding("UTF-8");
+        String openid = request.getParameter("openid");
+        String userIdentifier = request.getParameter("openid_identifier");
+        String providerName = request.getParameter("openid_provider_name");
+        String openid_state = request.getParameter("state");
+        String openid_code = request.getParameter("code");
+
+        if (openid != null) {
+
+            // Call from frontend - user pressed provider's button and we redirect him to provider's page
+
+            //User openID identifier was entered
+            if (userIdentifier != null) {
+
+            } else if (providerName != null) {
+                // User just clicked on provider's button (e.g. Google) so we should load config and redirect him
+
+                String authURL = OpenIDAuth.getInstance().getAuthURL(providerName);
+                response.sendRedirect(authURL);
+            }
+
+        } else if (openid_code != null && openid_state!= null) {
+            // Handle callback URL call from OpenID provider
+
+            OMIUser registeredUser = OpenIDAuth.getInstance().getAccessTokenAndAuthUser(openid_code, openid_state);
+            if (registeredUser != null)
+            {
+                // set session
+                HttpSession session = request.getSession(true);
+                session.setAttribute("userID", registeredUser.email);
+                response.sendRedirect("/");
+            }
+
+        }
+
     }
 
     protected void doPost(HttpServletRequest request,

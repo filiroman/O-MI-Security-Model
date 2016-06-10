@@ -51,6 +51,16 @@
             <artifactId>slf4j-nop</artifactId>
             <version>1.7.19</version>
         </dependency>
+        <!--<dependency>-->
+            <!--<groupId>com.google.api-client</groupId>-->
+            <!--<artifactId>google-api-client</artifactId>-->
+            <!--<version>1.20.0</version>-->
+        <!--</dependency>-->
+        <dependency>
+            <groupId>com.nimbusds</groupId>
+            <artifactId>oauth2-oidc-sdk</artifactId>
+            <version>3.4.1</version>
+        </dependency>
 
 
     </dependencies>

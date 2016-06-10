@@ -1,6 +1,6 @@
 package com.aaltoasia.omi.accontrol.db;
 
-import com.aaltoasia.omi.accontrol.ConfigHelper;
+import com.aaltoasia.omi.accontrol.config.ConfigHelper;
 import com.aaltoasia.omi.accontrol.db.objects.OMIGroup;
 import com.aaltoasia.omi.accontrol.db.objects.OMIRule;
 import com.aaltoasia.omi.accontrol.db.objects.OMIUser;

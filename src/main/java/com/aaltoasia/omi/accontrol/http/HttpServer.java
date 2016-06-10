@@ -1,7 +1,9 @@
 package com.aaltoasia.omi.accontrol.http;
 
 import com.aaltoasia.omi.accontrol.*;
+import com.aaltoasia.omi.accontrol.config.ConfigHelper;
 import com.aaltoasia.omi.accontrol.db.DBHelper;
+import com.aaltoasia.omi.accontrol.openid.OpenIDAuth;
 import org.eclipse.jetty.server.*;
 import org.eclipse.jetty.server.session.HashSessionIdManager;
 import org.eclipse.jetty.server.session.HashSessionManager;
@@ -233,6 +235,9 @@ public class HttpServer implements Runnable
             return;
 
         if (FacebookAuth.getInstance() == null)
+            return;
+
+        if (OpenIDAuth.getInstance() == null)
             return;
 
         server.setStopAtShutdown(true);
