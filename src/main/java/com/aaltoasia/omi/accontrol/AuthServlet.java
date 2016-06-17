@@ -35,7 +35,18 @@ public class AuthServlet extends HttpServlet {
 
         String auth_type = request.getParameter("auth_type");
         String accessCode = request.getParameter("code");
-        if (accessCode != null)
+        String logout = request.getParameter("logout");
+        if (logout != null) {
+
+            HttpSession session = request.getSession(false);
+            if (session != null) {
+                session.removeAttribute("userID");
+                session.invalidate();
+            }
+
+            response.sendRedirect("/");
+
+        } else if (accessCode != null)
         {
             auth.getAccessToken(accessCode);
             String userInfo = auth.getUserInformation();

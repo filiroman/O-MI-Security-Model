@@ -18,7 +18,6 @@ import com.nimbusds.oauth2.sdk.id.State;
 import com.nimbusds.oauth2.sdk.token.AccessToken;
 import com.nimbusds.oauth2.sdk.token.BearerAccessToken;
 import com.nimbusds.openid.connect.sdk.*;
-import com.oracle.javafx.jmx.json.JSONException;
 import net.minidev.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,7 +27,6 @@ import java.net.URI;
 import java.net.URL;
 import java.nio.charset.Charset;
 import java.util.HashMap;
-import java.util.Map;
 
 /**
  * Created by romanfilippov on 08/06/16.
@@ -62,7 +60,7 @@ public class OpenIDAuth {
         loadConfig();
     }
 
-    private void discoverConfigForState(String configURL, State state) throws IOException, JSONException
+    private void discoverConfigForState(String configURL, State state) throws IOException
     {
         InputStream is = new URL(configURL).openStream();
         try {

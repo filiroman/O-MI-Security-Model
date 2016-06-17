@@ -84,10 +84,10 @@ openid = {
 	 */
 	signin : function(box_id, onload) {
 
-		if (provider != 'google') {
-				alert("This provider is not implemented yet!");
-				return false;
-		}
+		// if (box_id != 'google') {
+		// 		alert("This provider is not implemented yet!");
+		// 		return false;
+		// }
 
 		var provider = providers[box_id];
 		if (!provider) {

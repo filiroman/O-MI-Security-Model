@@ -1,13 +1,16 @@
 (function() {
     $(function() {
       $('#btn-fblogin').on('click', function() {
-        window.location.href = "../Login?auth_type=facebook";
+        window.location.href = "/security/Login?auth_type=facebook";
       });
 
       $('#btn-signup').on('click', function() {
 
-        var pass1 = $('input[name=passwd]').val();
-        var pass2 = $('input[name=passwd_repeat]').val();
+        var pass1 = $('#password_first').val();
+        var pass2 = $('#password_second').val();
+
+        console.log(pass1);
+        console.log(pass2);
 
         if (pass1 != pass2)
         {

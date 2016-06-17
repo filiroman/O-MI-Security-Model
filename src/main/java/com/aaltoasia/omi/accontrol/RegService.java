@@ -95,7 +95,7 @@ public class RegService extends HttpServlet {
 
             String userName = request.getParameter("username");
             String userEmail = request.getParameter("email");
-            String userPass = request.getParameter("passwd");
+            String userPass = request.getParameter("password");
 
             boolean registered = AuthService.getInstance().registerUser(userName, userEmail, userPass);
             if (registered) {
@@ -110,7 +110,7 @@ public class RegService extends HttpServlet {
 
             //JsonObject userDetails = new JsonParser().parse(body).getAsJsonObject();
             String userName = request.getParameter("username");
-            String userPass = request.getParameter("passwd");
+            String userPass = request.getParameter("password");
 
             boolean authenticated = AuthService.getInstance().checkUserCredentials(userName, userPass);
 
@@ -120,6 +120,8 @@ public class RegService extends HttpServlet {
                 HttpSession session = request.getSession(true);
                 session.setAttribute("userID", userName);
                 response.sendRedirect("/");
+            } else {
+                logger.error("Error while authenticating user!");
             }
         }
 
