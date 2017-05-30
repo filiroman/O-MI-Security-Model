@@ -1,4 +1,7 @@
 # O-MI-Security-Model
+
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/3c9b940c31e445ed87d4cb0113e8c4d2)](https://www.codacy.com/app/TK009/O-MI-Security-Model?utm_source=github.com&utm_medium=referral&utm_content=filiroman/O-MI-Security-Model&utm_campaign=badger)
+
 Complementary authorization and access control modules for O-MI.
 
 Dependencies
